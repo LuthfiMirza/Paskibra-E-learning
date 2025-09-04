@@ -1,0 +1,389 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* Base Layer - Global Styles */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    body {
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Montserrat', 'Arial Black', system-ui, sans-serif;
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: -0.025em;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+        transition: background 0.2s ease;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    
+    /* Dark scrollbar for dark backgrounds */
+    .dark-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .dark-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .dark-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Components Layer - Reusable Components */
+@layer components {
+    /* Button Components */
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+    
+    .btn-primary {
+        @apply btn bg-paskibra-navy hover:bg-paskibra-navy-dark text-white shadow-soft hover:shadow-medium focus:ring-paskibra-navy-light;
+    }
+    
+    .btn-secondary {
+        @apply btn bg-gray-100 hover:bg-gray-200 text-gray-900 shadow-soft hover:shadow-medium focus:ring-gray-500;
+    }
+    
+    .btn-success {
+        @apply btn bg-success-500 hover:bg-success-600 text-white shadow-soft hover:shadow-medium focus:ring-success-500;
+    }
+    
+    .btn-warning {
+        @apply btn bg-warning-500 hover:bg-warning-600 text-white shadow-soft hover:shadow-medium focus:ring-warning-500;
+    }
+    
+    .btn-danger {
+        @apply btn bg-danger-500 hover:bg-danger-600 text-white shadow-soft hover:shadow-medium focus:ring-danger-500;
+    }
+    
+    .btn-outline {
+        @apply btn border-2 border-paskibra-navy text-paskibra-navy hover:bg-paskibra-navy hover:text-white focus:ring-paskibra-navy-light;
+    }
+    
+    .btn-lg {
+        @apply px-6 py-3 text-base;
+    }
+    
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+    
+    /* Card Components */
+    .card {
+        @apply bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden;
+    }
+    
+    .card-hover {
+        @apply card transition-all duration-300 hover:shadow-medium hover:-translate-y-1;
+    }
+    
+    .card-header {
+        @apply px-6 py-4 border-b border-gray-100 bg-gray-50/50;
+    }
+    
+    .card-body {
+        @apply px-6 py-4;
+    }
+    
+    .card-footer {
+        @apply px-6 py-4 border-t border-gray-100 bg-gray-50/50;
+    }
+    
+    /* Badge Components */
+    .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+    
+    .badge-primary {
+        @apply badge bg-paskibra-navy text-white;
+    }
+    
+    .badge-success {
+        @apply badge bg-success-100 text-success-700;
+    }
+    
+    .badge-warning {
+        @apply badge bg-warning-100 text-warning-700;
+    }
+    
+    .badge-danger {
+        @apply badge bg-danger-100 text-danger-700;
+    }
+    
+    .badge-info {
+        @apply badge bg-info-100 text-info-700;
+    }
+    
+    /* Form Components */
+    .form-input {
+        @apply block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paskibra-navy focus:border-transparent transition-all duration-200;
+    }
+    
+    .form-select {
+        @apply form-input pr-10 bg-white;
+    }
+    
+    .form-textarea {
+        @apply form-input resize-none;
+    }
+    
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+    
+    .form-error {
+        @apply text-sm text-danger-600 mt-1;
+    }
+    
+    /* Navigation Components */
+    .nav-link {
+        @apply flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200;
+    }
+    
+    .nav-link-active {
+        @apply nav-link bg-white/10 text-white border-l-4 border-paskibra-gold;
+    }
+    
+    .nav-link-inactive {
+        @apply nav-link text-gray-300 hover:bg-white/10 hover:text-white;
+    }
+    
+    /* Alert Components */
+    .alert {
+        @apply p-4 rounded-lg border-l-4;
+    }
+    
+    .alert-success {
+        @apply alert bg-success-50 border-success-500 text-success-700;
+    }
+    
+    .alert-warning {
+        @apply alert bg-warning-50 border-warning-500 text-warning-700;
+    }
+    
+    .alert-danger {
+        @apply alert bg-danger-50 border-danger-500 text-danger-700;
+    }
+    
+    .alert-info {
+        @apply alert bg-info-50 border-info-500 text-info-700;
+    }
+    
+    /* Stats Components */
+    .stat-card {
+        @apply card-hover p-6;
+    }
+    
+    .stat-icon {
+        @apply w-12 h-12 rounded-xl flex items-center justify-center mb-4;
+    }
+    
+    .stat-value {
+        @apply text-3xl font-bold text-gray-900 mb-2;
+    }
+    
+    .stat-label {
+        @apply text-sm font-medium text-gray-600 mb-2;
+    }
+    
+    .stat-change {
+        @apply flex items-center text-sm font-medium;
+    }
+    
+    .stat-change-positive {
+        @apply stat-change text-success-600;
+    }
+    
+    .stat-change-negative {
+        @apply stat-change text-danger-600;
+    }
+    
+    /* Loading Components */
+    .loading-spinner {
+        @apply inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+    }
+    
+    .loading-dots {
+        @apply inline-flex space-x-1;
+    }
+    
+    .loading-dot {
+        @apply w-2 h-2 bg-current rounded-full animate-pulse;
+    }
+    
+    /* Gradient Backgrounds */
+    .gradient-paskibra {
+        background: linear-gradient(135deg, #1B365D 0%, #2563EB 100%);
+    }
+    
+    .gradient-patriot {
+        background: linear-gradient(135deg, #DC2626 0%, #1B365D 50%, #F59E0B 100%);
+    }
+    
+    .gradient-gold {
+        background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
+    }
+    
+    /* Animation Classes */
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    .animate-slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+    
+    .animate-bounce-subtle {
+        animation: bounceSubtle 2s infinite;
+    }
+    
+    @keyframes bounceSubtle {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+    }
+    
+    /* Hover Effects */
+    .hover-lift {
+        @apply transition-all duration-300;
+    }
+    
+    .hover-lift:hover {
+        @apply -translate-y-1 shadow-medium;
+    }
+    
+    .hover-scale {
+        @apply transition-transform duration-200;
+    }
+    
+    .hover-scale:hover {
+        @apply scale-105;
+    }
+    
+    /* Focus States */
+    .focus-ring {
+        @apply focus:outline-none focus:ring-2 focus:ring-paskibra-navy focus:ring-offset-2;
+    }
+    
+    /* Text Utilities */
+    .text-gradient-paskibra {
+        background: linear-gradient(135deg, #1B365D 0%, #2563EB 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .text-gradient-gold {
+        background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+}
+
+/* Utilities Layer - Custom Utilities */
+@layer utilities {
+    /* Backdrop Blur Utilities */
+    .backdrop-blur-xs {
+        backdrop-filter: blur(2px);
+    }
+    
+    /* Glass Effect */
+    .glass {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .glass-dark {
+        background: rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Text Shadow Utilities */
+    .text-shadow {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .text-shadow-lg {
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Safe Area Utilities for Mobile */
+    .safe-top {
+        padding-top: env(safe-area-inset-top);
+    }
+    
+    .safe-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    /* Print Utilities */
+    @media print {
+        .print-hidden {
+            display: none !important;
+        }
+        
+        .print-visible {
+            display: block !important;
+        }
+    }
+}
+
+/* Custom CSS Variables for Dynamic Theming */
+:root {
+    --paskibra-navy: #1B365D;
+    --paskibra-navy-light: #2563EB;
+    --paskibra-navy-dark: #0F172A;
+    --paskibra-red: #DC2626;
+    --paskibra-red-light: #EF4444;
+    --paskibra-red-dark: #991B1B;
+    --paskibra-gold: #F59E0B;
+    --paskibra-gold-light: #FCD34D;
+    --paskibra-gold-dark: #D97706;
+    
+    --shadow-soft: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    --shadow-medium: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-strong: 0 10px 40px -10px rgba(0, 0, 0, 0.15), 0 2px 10px -2px rgba(0, 0, 0, 0.05);
+    --shadow-paskibra: 0 4px 20px -2px rgba(27, 54, 93, 0.25);
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+    .dark-mode {
+        --shadow-soft: 0 2px 15px -3px rgba(0, 0, 0, 0.3), 0 10px 20px -2px rgba(0, 0, 0, 0.2);
+        --shadow-medium: 0 4px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        --shadow-strong: 0 10px 40px -10px rgba(0, 0, 0, 0.5), 0 2px 10px -2px rgba(0, 0, 0, 0.3);
+    }
+}

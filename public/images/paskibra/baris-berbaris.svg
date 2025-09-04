@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="barisGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="300" height="200" fill="url(#barisGrad)"/>
+  
+  <!-- Marching figures -->
+  <g transform="translate(50, 60)">
+    <!-- Figure 1 -->
+    <circle cx="20" cy="20" r="8" fill="white"/>
+    <rect x="16" y="28" width="8" height="25" fill="white"/>
+    <rect x="12" y="35" width="16" height="4" fill="white"/>
+    <rect x="14" y="53" width="4" height="15" fill="white"/>
+    <rect x="22" y="53" width="4" height="15" fill="white"/>
+    
+    <!-- Figure 2 -->
+    <circle cx="70" cy="20" r="8" fill="white"/>
+    <rect x="66" y="28" width="8" height="25" fill="white"/>
+    <rect x="62" y="35" width="16" height="4" fill="white"/>
+    <rect x="64" y="53" width="4" height="15" fill="white"/>
+    <rect x="72" y="53" width="4" height="15" fill="white"/>
+    
+    <!-- Figure 3 -->
+    <circle cx="120" cy="20" r="8" fill="white"/>
+    <rect x="116" y="28" width="8" height="25" fill="white"/>
+    <rect x="112" y="35" width="16" height="4" fill="white"/>
+    <rect x="114" y="53" width="4" height="15" fill="white"/>
+    <rect x="122" y="53" width="4" height="15" fill="white"/>
+  </g>
+  
+  <!-- Arrow -->
+  <polygon points="220,100 240,90 240,95 260,95 260,105 240,105 240,110" fill="#F59E0B"/>
+  
+  <!-- Text -->
+  <text x="150" y="190" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Baris Berbaris</text>
+</svg>
