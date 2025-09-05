@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\QuizController as AdminQuizController;
+use App\Http\Controllers\Admin\QuizQuestionController as AdminQuizQuestionController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Auth\Admin\LoginController as AdminLoginController;
 use App\Http\Middleware\AdminMiddleware;
@@ -92,6 +93,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('courses', AdminCourseController::class);
         Route::resource('quizzes', AdminQuizController::class);
+        Route::resource('quizzes.questions', AdminQuizQuestionController::class);
         // CRUD Reports tersimpan
         Route::resource('reports', AdminReportController::class);
     });

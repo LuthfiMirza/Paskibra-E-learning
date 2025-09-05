@@ -45,7 +45,53 @@
     </div>
 </div>
 
-<!-- Quiz Form -->
+@if(isset($questions) && $questions instanceof \Illuminate\Support\Collection && $questions->count())
+<!-- Quiz Form (Dynamic from DB) -->
+<form id="quiz-form" method="POST" action="{{ route('quizzes.submit', $quiz->id) }}" class="space-y-8">
+    @csrf
+    @foreach($questions as $idx => $q)
+    <div class="question-card bg-white rounded-xl shadow-sm border border-gray-200 p-8" data-question="{{ $idx+1 }}" {{ $idx>0 ? 'hidden' : '' }}>
+        <div class="mb-6">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">{{ $idx+1 }}</div>
+                <span class="text-sm text-gray-500">Soal {{ $idx+1 }} dari {{ $questions->count() }}</span>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">{!! nl2br(e($q->question)) !!}</h3>
+        </div>
+        <div class="space-y-3">
+            @foreach($q->options as $opt)
+            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <input type="radio" name="answers[{{ $q->id }}]" value="{{ $opt->id }}" class="mr-4 text-blue-600">
+                <span class="text-gray-900">{{ $opt->option_text }}</span>
+            </label>
+            @endforeach
+        </div>
+    </div>
+    @endforeach
+    <div class="flex justify-between mt-4">
+        <button type="button" id="prev-btn" class="px-4 py-2 rounded-lg border border-gray-300" disabled>Sebelumnya</button>
+        <div>
+            <button type="button" id="next-btn" class="px-4 py-2 rounded-lg bg-blue-600 text-white">Berikutnya</button>
+            <button type="submit" id="submit-btn" class="px-4 py-2 rounded-lg bg-green-600 text-white hidden">Kumpulkan</button>
+        </div>
+    </div>
+</form>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    let current = 1; const total = {{ $questions->count() }};
+    function show(n){
+        document.querySelectorAll('.question-card').forEach(el=>el.setAttribute('hidden','hidden'));
+        document.querySelector('.question-card[data-question="'+n+'"]').removeAttribute('hidden');
+        document.getElementById('prev-btn').disabled = n===1;
+        if(n===total){ document.getElementById('next-btn').classList.add('hidden'); document.getElementById('submit-btn').classList.remove('hidden'); }
+        else { document.getElementById('next-btn').classList.remove('hidden'); document.getElementById('submit-btn').classList.add('hidden'); }
+    }
+    document.getElementById('next-btn').addEventListener('click', function(){ if(current<total){ current++; show(current);} });
+    document.getElementById('prev-btn').addEventListener('click', function(){ if(current>1){ current--; show(current);} });
+});
+</script>
+@else
+<!-- Quiz Form (Demo static) -->
 <form id="quiz-form" method="POST" action="#" class="space-y-8">
     @csrf
     
@@ -228,6 +274,7 @@
         </button>
     </div>
 </form>
+@endif
 
 <!-- Submit Confirmation Modal -->
 <div id="submit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">

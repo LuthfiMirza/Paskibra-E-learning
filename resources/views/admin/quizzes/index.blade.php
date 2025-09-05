@@ -56,7 +56,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="#" class="text-gray-600 hover:text-gray-900 mr-4">Kelola Pertanyaan</a>
+                            <a href="{{ route('admin.quizzes.questions.index', $quiz) }}" class="text-gray-600 hover:text-gray-900 mr-4">Kelola Pertanyaan</a>
                             <a href="{{ route('admin.quizzes.edit', $quiz) }}" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
                             <form action="{{ route('admin.quizzes.destroy', $quiz) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kuis ini?');">
                                 @csrf
