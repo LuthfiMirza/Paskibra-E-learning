@@ -11,10 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'instructor', 'student'])->default('student')->after('email');
-            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active')->after('role');
-        });
+        // Guarded adds to avoid duplicate column errors on re-run
+        if (!Schema::hasColumn('users', 'role')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->enum('role', ['admin', 'instructor', 'student'])->default('student')->after('email');
+            });
+        }
+
+        if (!Schema::hasColumn('users', 'status')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->enum('status', ['active', 'inactive', 'suspended'])->default('active')->after('role');
+            });
+        }
     }
 
     /**
@@ -22,8 +30,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['role', 'status']);
-        });
+        if (Schema::hasColumn('users', 'role') || Schema::hasColumn('users', 'status')) {
+            Schema::table('users', function (Blueprint $table) {
+                if (Schema::hasColumn('users', 'role')) {
+                    $table->dropColumn('role');
+                }
+                if (Schema::hasColumn('users', 'status')) {
+                    $table->dropColumn('status');
+                }
+            });
+        }
     }
 };
