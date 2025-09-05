@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <form action="#" method="POST">
+    <form action="{{ route('admin.settings.update') }}" method="POST">
         @csrf
         <!-- Header Section -->
         <div class="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between">
@@ -55,16 +55,16 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="site_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Situs</label>
-                            <input type="text" id="site_name" value="{{ $settings['site_name'] }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id=\"site_name\" name=\"site_name\" value=\"{{ $settings['site_name'] }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label for="admin_email" class="block text-sm font-medium text-gray-700 mb-1">Email Admin</label>
-                            <input type="email" id="admin_email" value="{{ $settings['admin_email'] }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="email" id=\"admin_email\" name=\"admin_email\" value=\"{{ $settings['admin_email'] }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                     <div>
                         <label for="site_description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Situs</label>
-                        <textarea id="site_description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">{{ $settings['site_description'] }}</textarea>
+                        <textarea id=\"site_description\" name=\"site_description\" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">{{ $settings['site_description'] }}</textarea>
                     </div>
                 </div>
             </div>
@@ -147,3 +147,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+

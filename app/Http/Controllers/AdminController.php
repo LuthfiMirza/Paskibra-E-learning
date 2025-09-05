@@ -181,22 +181,46 @@ class AdminController extends Controller
 
     public function settings()
     {
-        // Sample system settings
-        $settings = [
+        $defaults = [
             'site_name' => 'PASKIBRA WiraPurusa E-Learning',
             'site_description' => 'Platform pembelajaran online untuk anggota PASKIBRA',
             'admin_email' => 'admin@school.edu',
             'max_file_upload' => '10MB',
             'session_timeout' => '120 minutes',
             'backup_frequency' => 'daily',
-            'maintenance_mode' => false,
-            'user_registration' => true,
-            'email_notifications' => true,
-            'auto_backup' => true,
-            'debug_mode' => false
+            'maintenance_mode' => '0',
+            'user_registration' => '1',
+            'email_notifications' => '1',
+            'auto_backup' => '1',
+            'debug_mode' => '0',
         ];
 
+        $settings = \App\Models\Setting::getMany(array_keys($defaults), $defaults);
         return view('admin.settings', compact('settings'));
+    }
+
+    public function updateSettings(\Illuminate\Http\Request $request)
+    {
+        $data = $request->validate([
+            'site_name' => 'required|string|max:255',
+            'site_description' => 'nullable|string',
+            'admin_email' => 'required|email',
+            'max_file_upload' => 'required|string',
+            'session_timeout' => 'required|string',
+            'backup_frequency' => 'required|in:daily,weekly,monthly',
+            'maintenance_mode' => 'nullable|in:0,1',
+            'user_registration' => 'nullable|in:0,1',
+            'email_notifications' => 'nullable|in:0,1',
+            'auto_backup' => 'nullable|in:0,1',
+            'debug_mode' => 'nullable|in:0,1',
+        ]);
+
+        foreach (['maintenance_mode','user_registration','email_notifications','auto_backup','debug_mode'] as $key) {
+            $data[$key] = isset($data[$key]) ? $data[$key] : '0';
+        }
+
+        \App\Models\Setting::setMany($data);
+        return redirect()->route('admin.settings')->with('success', 'Pengaturan disimpan.');
     }
 
     public function reports()

@@ -63,7 +63,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
+        return view('admin.courses.edit', compact('course'));
     }
 
     /**
@@ -71,7 +71,23 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
+            'difficulty' => 'required|in:basic,intermediate,advanced',
+            'is_active' => 'required|boolean',
+        ]);
+
+        $course->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'category' => $request->category,
+            'difficulty' => $request->difficulty,
+            'is_active' => $request->is_active,
+        ]);
+
+        return redirect()->route('admin.courses.index')->with('success', 'Kursus diperbarui.');
     }
 
     /**
@@ -79,6 +95,7 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        //
+        $course->delete();
+        return redirect()->route('admin.courses.index')->with('success', 'Kursus dihapus.');
     }
 }

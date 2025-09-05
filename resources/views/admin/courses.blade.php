@@ -57,8 +57,8 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                            <a href="#" class="text-red-600 hover:text-red-900 ml-4">Hapus</a>
+                            <a href="{{ route('admin.courses.edit', $course) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                            <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" class="inline ml-4" onsubmit="return confirm('Hapus kursus ini?')">@csrf @method('DELETE')<button class="text-red-600 hover:text-red-900">Hapus</button></form>
                         </td>
                     </tr>
                 @empty

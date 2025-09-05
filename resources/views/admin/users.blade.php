@@ -4,171 +4,168 @@
 @section('subtitle', 'Manajemen pengguna sistem e-learning')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
+<div class="px-4 py-6 md:px-6 lg:px-8 space-y-8 max-w-7xl mx-auto">
+    <!-- Page Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-4xl md:text-4xl font-extrabold text-slate-900">Kelola Pengguna</h1>
+            <p class="mt-1 text-slate-500">Manajemen akun pengguna dan hak akses sistem.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                Export
+            </a>
+            <a href="{{ route('admin.users.create') }}" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+                Tambah Pengguna
+            </a>
+        </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 ring-1 ring-blue-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
             <div>
-                <h1 class="text-3xl font-bold text-gray-800">Kelola Pengguna</h1>
-                <p class="text-gray-600 mt-1">Manajemen akun pengguna dan hak akses sistem.</p>
-            </div>
-            <div class="flex space-x-2 mt-4 md:mt-0">
-                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path></svg>
-                    <span>Tambah</span>
-                </button>
-                <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    <span>Export</span>
-                </button>
+                <p class="text-sm text-slate-500">Total Siswa</p>
+                <p class="text-2xl font-bold text-slate-900">{{ $stats['students'] ?? 0 }}</p>
             </div>
         </div>
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="admin-card p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Total Siswa</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-1">{{ collect($users)->where('role', 'student')->count() }}</p>
-                </div>
-                <div class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full">
-                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
-                </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-50 text-green-600 ring-1 ring-green-100">
+               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 4-10 10H6v-4Z"/><path d="m17.5 2.5-1.5 1.5"/></svg>
+            </div>
+            <div>
+                <p class="text-sm text-slate-500">Total Instruktur</p>
+                <p class="text-2xl font-bold text-slate-900">{{ $stats['instructors'] ?? 0 }}</p>
             </div>
         </div>
-        <div class="admin-card p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Total Instruktur</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-1">{{ collect($users)->where('role', 'instructor')->count() }}</p>
-                </div>
-                <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-full">
-                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path></svg>
-                </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-50 text-yellow-600 ring-1 ring-yellow-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m7.8 16.2-2.9 2.9"/><path d="M6 12H2"/><path d="m7.8 7.8-2.9-2.9"/><circle cx="12" cy="12" r="4"/></svg>
+            </div>
+            <div>
+                <p class="text-sm text-slate-500">Pengguna Aktif</p>
+                <p class="text-2xl font-bold text-slate-900">{{ $stats['active'] ?? 0 }}</p>
             </div>
         </div>
-        <div class="admin-card p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Pengguna Aktif</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-1">{{ collect($users)->where('status', 'active')->count() }}</p>
-                </div>
-                <div class="w-12 h-12 flex items-center justify-center bg-yellow-100 rounded-full">
-                    <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5">
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 17a10.018 10.018 0 1 1-.978-2.326 3 3 0 0 0-1.724.117"/><path d="M13 12h4c0-.8-.2-1.2-.5-1.5l-9.5-9.5c-.3-.3-.7-.5-1.5-.5H4v1.5c0 .8.2 1.2.5 1.5z"/></svg>
+            </div>
+            <div>
+                <p class="text-sm text-slate-500">Total Admin</p>
+                <p class="text-2xl font-bold text-slate-900">{{ $stats['admins'] ?? 0 }}</p>
             </div>
         </div>
-        <div class="admin-card p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Total Admin</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-1">{{ collect($users)->where('role', 'admin')->count() }}</p>
-                </div>
-                <div class="w-12 h-12 flex items-center justify-center bg-purple-100 rounded-full">
-                    <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filter and Search -->
-    <div class="admin-card p-4 mb-8">
-        <form class="flex flex-col sm:flex-row items-center gap-4">
-            <div class="relative flex-grow w-full sm:w-auto">
-                <input type="text" placeholder="Cari pengguna..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </div>
-            <select class="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <option value="">Semua Role</option>
-                <option value="student">Siswa</option>
-                <option value="instructor">Instruktur</option>
-                <option value="admin">Admin</option>
-            </select>
-            <select class="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <option value="">Semua Status</option>
-                <option value="active">Aktif</option>
-                <option value="inactive">Tidak Aktif</option>
-            </select>
-            <button type="submit" class="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center">
-                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"></path></svg>
-                <span>Filter</span>
-            </button>
-        </form>
     </div>
 
     <!-- Users Table -->
-    <div class="admin-card bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <!-- Flash Messages -->
+        @if(session('success'))
+            <div class="px-4 py-3 bg-green-50 text-green-700 border-b border-green-200">{{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="px-4 py-3 bg-red-50 text-red-700 border-b border-red-200">{{ session('error') }}</div>
+        @endif
+
+        <!-- Filter and Search -->
+        <div class="p-4 md:p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <form method="GET" class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="relative max-w-xs w-full md:max-w-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input name="q" value="{{ request('q') }}" type="text" placeholder="Cari pengguna..." class="w-full pl-10 pr-4 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div class="flex items-center gap-3 md:justify-end">
+                    <select name="role" class="text-sm bg-white border border-slate-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-44">
+                        <option value="">Semua Peran</option>
+                        <option value="student" {{ request('role')=='student' ? 'selected' : '' }}>Student</option>
+                        <option value="instructor" {{ request('role')=='instructor' ? 'selected' : '' }}>Instructor</option>
+                        <option value="admin" {{ request('role')=='admin' ? 'selected' : '' }}>Admin</option>
+                    </select>
+                    <select name="status" class="text-sm bg-white border border-slate-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-44">
+                        <option value="">Semua Status</option>
+                        <option value="active" {{ request('status')=='active' ? 'selected' : '' }}>Aktif</option>
+                        <option value="inactive" {{ request('status')=='inactive' ? 'selected' : '' }}>Tidak Aktif</option>
+                        <option value="alumni" {{ request('status')=='alumni' ? 'selected' : '' }}>Alumni</option>
+                    </select>
+                    <button class="hidden" type="submit">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table -->
         <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-500">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50">
                     <tr>
-                        <th scope="col" class="p-4">
-                            <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        </th>
+                        <th scope="col" class="p-4 w-12"><input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"></th>
                         <th scope="col" class="px-6 py-3">Pengguna</th>
-                        <th scope="col" class="px-6 py-3">Role</th>
+                        <th scope="col" class="px-6 py-3">Peran</th>
                         <th scope="col" class="px-6 py-3">Status</th>
-                        <th scope="col" class="px-6 py-3">Bergabung</th>
-                        <th scope="col" class="px-6 py-3 text-right">Aksi</th>
+                        <th scope="col" class="px-6 py-3">Tanggal Bergabung</th>
+                        <th scope="col" class="px-6 py-3">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($users as $user)
-                    <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="w-4 p-4">
-                            <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center">
-                                <img class="w-10 h-10 rounded-full object-cover mr-4" src="{{ $user['avatar'] }}" alt="{{ $user['name'] }}">
-                                <div class="min-w-0">
-                                    <div class="font-medium text-gray-900 truncate">{{ $user['name'] }}</div>
-                                    <div class="text-gray-500 truncate">{{ $user['email'] }}</div>
+                    @forelse($users as $user)
+                    <tr class="bg-white border-b hover:bg-slate-50">
+                        <td class="p-4"><input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"></td>
+                        <td class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">
+                            <div class="flex items-center gap-3">
+                                <img class="w-10 h-10 rounded-full object-cover ring-1 ring-slate-200" src="{{ $user->avatar ?? ('https://ui-avatars.com/api/?name=' . urlencode($user->name ?? 'U') . '&background=E2E8F0&color=475569') }}" alt="{{ $user->name ?? 'User' }} avatar">
+                                <div>
+                                    <div class="font-semibold">{{ $user->name }}</div>
+                                    <div class="text-slate-500">{{ $user->email }}</div>
                                 </div>
                             </div>
                         </td>
+                        <td class="px-6 py-4">{{ ucfirst($user->role) }}</td>
                         <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                @if($user['role'] == 'admin') bg-red-100 text-red-800
-                                @elseif($user['role'] == 'instructor') bg-purple-100 text-purple-800
-                                @else bg-blue-100 text-blue-800
-                                @endif">
-                                {{ ucfirst($user['role']) }}
+                            @php $isActive = ($user->status ?? '') === 'active'; @endphp
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                {{ $isActive ? 'Aktif' : 'Tidak Aktif' }}
                             </span>
                         </td>
+                        <td class="px-6 py-4">{{ optional($user->created_at)->locale('id')->translatedFormat('d M Y') }}</td>
                         <td class="px-6 py-4">
-                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                @if($user['status'] == 'active') bg-green-100 text-green-800
-                                @else bg-gray-100 text-gray-800
-                                @endif">
-                                {{ $user['status'] == 'active' ? 'Aktif' : 'Tidak Aktif' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-gray-600">
-                            {{ \Carbon\Carbon::parse($user['joined_date'])->format('d M Y') }}
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end space-x-2">
-                                <button class="text-gray-400 hover:text-blue-600 p-1 rounded" title="Edit">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
-                                </button>
-                                <button class="text-gray-400 hover:text-red-600 p-1 rounded" title="Delete">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                                </button>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ route('admin.users.edit', $user) }}" class="text-blue-600 hover:text-blue-800" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                </a>
+                                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Hapus pengguna ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="text-red-600 hover:text-red-800" title="Hapus">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-16 text-center text-slate-500">Belum ada data pengguna.</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination -->
-        <div class="p-4 border-t border-gray-200">
-            {{-- Pagination links will be added here --}}
+        <div class="p-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+            <div class="text-slate-500">
+                Menampilkan <span class="font-semibold text-slate-700">{{ $users->firstItem() }}-{{ $users->lastItem() }}</span> dari <span class="font-semibold text-slate-700">{{ $users->total() }}</span> hasil
+            </div>
+            <div>
+                {{ $users->onEachSide(1)->links() }}
+            </div>
         </div>
     </div>
 </div>
 @endsection
+
