@@ -393,6 +393,8 @@
             <main class="flex-1 px-4 py-6 sm:px-6 lg:px-10">
                 @yield('content')
             </main>
+
+            @include('components.footer')
         </div>
     </div>
 

@@ -353,6 +353,8 @@
         </div>
     </main>
 
+    @include('components.footer')
+
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
