@@ -7,261 +7,524 @@
 
     <title>{{ config('app.name', 'PASKIBRA Admin') }} - @yield('title', 'Admin Panel')</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Chart.js for dashboard graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('head')
 
     <style>
         :root {
-            --admin-bg: #f3f4f6; /* Light Gray */
-            --admin-panel-bg: #ffffff; /* White */
-            --admin-sidebar-bg: #ffffff; /* White */
-            --admin-text-primary: #1f2937; /* Dark Gray */
-            --admin-text-secondary: #6b7280; /* Medium Gray */
-            --admin-primary: #3b82f6; /* Blue */
-            --admin-border: #e5e7eb; /* Light Gray Border */
+            --ta-bg: #f8fafc;
+            --ta-surface: #ffffff;
+            --ta-border: #e2e8f0;
+            --ta-border-strong: #d0d7e3;
+            --ta-primary: #4f46e5;
+            --ta-primary-soft: #eef2ff;
+            --ta-text: #0f172a;
+            --ta-text-muted: #64748b;
+            --admin-sidebar-width: 18.5rem;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--admin-bg);
-            color: var(--admin-text-primary);
+            background-color: var(--ta-bg);
+            color: var(--ta-text);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
-        .font-display {
-            font-family: 'Poppins', 'Inter', sans-serif;
+        input[type='search']::-webkit-search-decoration,
+        input[type='search']::-webkit-search-cancel-button,
+        input[type='search']::-webkit-search-results-button,
+        input[type='search']::-webkit-search-results-decoration {
+            -webkit-appearance: none;
         }
 
-        /* New Light Sidebar */
-        .admin-sidebar {
-            background: var(--admin-sidebar-bg);
-            border-right: 1px solid var(--admin-border);
+        .ta-shadow {
+            box-shadow: 0 30px 60px -35px rgba(15, 23, 42, 0.25);
         }
 
-        .admin-nav-item {
+        .ta-shadow-soft {
+            box-shadow: 0 20px 40px -30px rgba(15, 23, 42, 0.2);
+        }
+
+        .admin-shell {
             display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-            color: var(--admin-text-secondary);
-            font-weight: 500;
+            min-height: 100vh;
+            width: 100%;
         }
 
-        .admin-nav-item:hover {
-            background-color: #f3f4f6; /* Light gray hover */
-            color: var(--admin-text-primary);
-        }
-
-        .admin-nav-item.active {
-            background-color: #e0e7ff; /* Light blue background */
-            color: var(--admin-primary);
-        }
-
-        .admin-nav-item .nav-icon {
-            margin-right: 0.75rem;
-            width: 1.25rem;
-            height: 1.25rem;
-        }
-
-        /* New Light Header */
-        .admin-header {
-            background: var(--admin-panel-bg);
-            border-bottom: 1px solid var(--admin-border);
-        }
-
-        /* New Card Style */
-        .admin-card {
-            background: var(--admin-panel-bg);
-            border-radius: 0.75rem;
-            border: 1px solid var(--admin-border);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        /* General Layout */
-        .sidebar {
+        .admin-sidebar {
+            width: var(--admin-sidebar-width);
+            background: var(--ta-surface);
+            border-right: 1px solid var(--ta-border);
             position: fixed;
             top: 0;
+            bottom: 0;
             left: 0;
-            height: 100vh;
-            width: 16rem; /* 256px */
-            z-index: 50;
+            padding: 2.1rem 1.5rem 2.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.3rem;
             overflow-y: auto;
+            z-index: 50;
         }
 
-        .main-content {
-            margin-left: 16rem;
+        .admin-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.45);
+            border-radius: 999px;
+        }
+
+        .admin-sidebar__brand,
+        .admin-sidebar__footer {
+            padding: 0 1.2rem;
+        }
+
+        .admin-sidebar__brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-sidebar__brand h1 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ta-text);
+        }
+
+        .admin-sidebar__brand p {
+            font-size: 0.75rem;
+            color: var(--ta-text-muted);
+        }
+
+        .admin-sidebar__brand button {
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .admin-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .admin-nav__item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.9rem 1.2rem;
+            width: 100%;
+            border-radius: 1.1rem;
+            color: var(--ta-text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+            overflow: hidden;
+            transition: color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .admin-nav__item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: rgba(79, 70, 229, 0.08);
+            opacity: 0;
+            transition: opacity 0.25s ease, background 0.25s ease;
+            z-index: -1;
+        }
+
+        .admin-nav__item:hover {
+            color: var(--ta-primary);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .admin-nav__item:hover::before {
+            opacity: 1;
+        }
+
+        .admin-nav__item.active {
+            color: var(--ta-primary);
+            border-color: rgba(79, 70, 229, 0.28);
+            box-shadow: 0 20px 52px -28px rgba(79, 70, 229, 0.55);
+        }
+
+        .admin-nav__item.active::before {
+            opacity: 1;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.28), rgba(129, 140, 248, 0.2));
+        }
+
+        .admin-nav__item > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-nav__item .nav-icon {
+            display: grid;
+            place-items: center;
+            width: 2.4rem;
+            height: 2.4rem;
+            border-radius: 0.85rem;
+            background: rgba(15, 23, 42, 0.06);
+            color: rgba(79, 70, 229, 0.75);
+            transition: background 0.25s ease, color 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .admin-nav__item:hover .nav-icon {
+            background: rgba(79, 70, 229, 0.14);
+            color: var(--ta-primary);
+        }
+
+        .admin-nav__item.active .nav-icon {
+            background: rgba(79, 70, 229, 0.2);
+            color: var(--ta-primary);
+        }
+
+        .admin-nav__item .nav-label {
+            line-height: 1.2;
+        }
+
+        .admin-sidebar__footer {
+            margin-top: auto;
+            padding-top: 1.75rem;
+            border-top: 1px dashed var(--ta-border);
+            font-size: 0.75rem;
+            color: var(--ta-text-muted);
+            line-height: 1.5;
+        }
+
+        .admin-main {
+            flex: 1;
+            margin-left: var(--admin-sidebar-width);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: var(--ta-surface);
+            border-bottom: 1px solid var(--ta-border);
+        }
+
+        @media (max-width: 1280px) {
+            .admin-sidebar {
+                width: min(90vw, var(--admin-sidebar-width));
+            }
         }
 
         @media (max-width: 1024px) {
-            .sidebar {
+            .admin-sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
             }
-            .sidebar.open {
+
+            .admin-sidebar.open {
                 transform: translateX(0);
+                box-shadow: 0 25px 60px -20px rgba(15, 23, 42, 0.3);
             }
-            .main-content {
+
+            .admin-main {
                 margin-left: 0;
             }
         }
     </style>
 </head>
-<body class="bg-admin-bg font-sans antialiased">
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-overlay" class="fixed inset-0 z-40 bg-black bg-opacity-25 hidden lg:hidden"></div>
+<body>
+    <div id="admin-mobile-overlay" class="fixed inset-0 z-40 bg-slate-900/40 hidden lg:hidden"></div>
 
-    <!-- Admin Sidebar -->
-    <aside id="sidebar" class="sidebar admin-sidebar">
-        <!-- Logo -->
-        <div class="flex items-center justify-center h-16 border-b border-admin-border">
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                         <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
+    @php
+        $navItems = [
+            [
+                'label' => 'Dashboard',
+                'route' => route('admin.index'),
+                'active' => ['admin.index'],
+                'icon' => 'chart',
+            ],
+            [
+                'label' => 'Pengguna',
+                'route' => route('admin.users.index'),
+                'active' => ['admin.users.*'],
+                'icon' => 'users',
+            ],
+            [
+                'label' => 'Kursus',
+                'route' => route('admin.courses.index'),
+                'active' => ['admin.courses.*'],
+                'icon' => 'courses',
+            ],
+            [
+                'label' => 'Kuis',
+                'route' => route('admin.quizzes.index'),
+                'active' => ['admin.quizzes.*'],
+                'icon' => 'quiz',
+            ],
+            [
+                'label' => 'Pengumuman',
+                'route' => route('admin.reports.index'),
+                'active' => ['admin.reports.*', 'admin.analytics'],
+                'icon' => 'reports',
+            ],
+            [
+                'label' => 'Pengaturan',
+                'route' => route('admin.settings'),
+                'active' => ['admin.settings', 'admin.settings.*'],
+                'icon' => 'settings',
+            ],
+        ];
+    @endphp
+
+    <div class="admin-shell">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="admin-sidebar__brand">
+                <div class="h-11 w-11 rounded-2xl overflow-hidden shadow-[0_12px_24px_-18px_rgba(79,70,229,0.55)] border border-slate-200">
+                    <img src="{{ asset('images/paskibra/new_logo.jpg') }}" alt="Logo PASKIBRA" class="h-full w-full object-cover">
                 </div>
-                <span class="text-xl font-semibold text-gray-800 font-display">Admin Panel</span>
+                <div>
+                    <h1>PASKIBRA Admin</h1>
+                    <p>WiraPurusa Dashboard</p>
+                </div>
+                <button id="admin-sidebar-close" class="lg:hidden ml-auto rounded-xl border border-slate-200 p-2 text-slate-500 hover:text-slate-700">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
             </div>
-        </div>
 
-        <!-- Admin Navigation -->
-        <nav class="mt-6 px-4 space-y-1">
-            <a href="{{ route('admin.index') }}" class="admin-nav-item {{ request()->routeIs('admin.index') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span>Dashboard</span>
-            </a>
-            <a href="{{ route('admin.users.index') }}" class="admin-nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m-4.5-4.5A2.5 2.5 0 019 3.5V1m0 18v-2.5a2.5 2.5 0 015 0V21m-5-18a2.5 2.5 0 00-5 0V3.5"></path></svg>
-                <span>Users</span>
-            </a>
-            <a href="{{ route('admin.courses.index') }}" class="admin-nav-item {{ request()->routeIs('admin.courses.*') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.168 18.477 18.582 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                <span>Courses</span>
-            </a>
-            <a href="{{ route('admin.quizzes.index') }}" class="admin-nav-item {{ request()->routeIs('admin.quizzes.*') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span>Quizzes</span>
-            </a>
-            <a href="{{ route('admin.reports.index') }}" class="admin-nav-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                <span>Reports</span>
-            </a>
-            <a href="{{ route('admin.settings') }}" class="admin-nav-item {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
-                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span>Settings</span>
-            </a>
-        </nav>
-    </aside>
+            <nav class="admin-nav" aria-label="Navigasi utama admin">
+                @foreach($navItems as $item)
+                    @php $isActive = request()->routeIs(...$item['active']); @endphp
+                    <a href="{{ $item['route'] }}" class="admin-nav__item {{ $isActive ? 'active' : '' }}" aria-current="{{ $isActive ? 'page' : 'false' }}">
+                        <span class="nav-icon">
+                            @switch($item['icon'])
+                                @case('chart')
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V9m6 10V5m-9 9v5m12 0V9" /></svg>
+                                    @break
+                                @case('users')
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2m13-10a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                    @break
+                                @case('courses')
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 7h4a2 2 0 012 2v11" /></svg>
+                                    @break
+                                @case('quiz')
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 20h3" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11a3 3 0 116 0c0 1.657-1.343 3-3 3v2" /></svg>
+                                    @break
+                                @case('reports')
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3H5a2 2 0 00-2 2v12a2 2 0 002 2h6" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 17l2-2-2-2m0 4l-2-2 2-2m-6 4h8a2 2 0 002-2V7a2 2 0 00-2-2h-8" /></svg>
+                                    @break
+                                @case('settings')
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l.867 2.658a1 1 0 00.95.69h2.801c.969 0 1.371 1.24.588 1.81l-2.267 1.646a1 1 0 00-.364 1.118l.867 2.658c.3.921-.755 1.688-1.54 1.118l-2.267-1.646a1 1 0 00-1.176 0l-2.267 1.646c-.784.57-1.838-.197-1.539-1.118l.867-2.658a1 1 0 00-.364-1.118L4.64 8.085c-.783-.57-.38-1.81.588-1.81h2.801a1 1 0 00.95-.69l.867-2.658z" /></svg>
+                                    @break
+                            @endswitch
+                        </span>
+                        <span class="nav-label">{{ $item['label'] }}</span>
+                    </a>
+                @endforeach
+            </nav>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Admin Header -->
-        <header class="admin-header sticky top-0 z-30">
-            <div class="px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    <!-- Mobile menu button -->
-                    <button id="mobile-menu-button" class="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-800 hover:bg-gray-100">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    </button>
+            <div class="admin-sidebar__footer">
+                <p class="font-semibold text-slate-400 mb-1">PASKIBRA ADMIN</p>
+                <p>Kelola seluruh aktivitas platform e-learning melalui panel modern ini.</p>
+            </div>
+        </aside>
 
-                    <!-- Search Bar -->
-                    <div class="flex-1 ml-4 lg:ml-0">
-                        <div class="relative w-full max-w-xs">
-                             <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                             <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <!-- Main -->
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div class="px-4 sm:px-6 lg:px-10">
+                    <div class="flex h-20 items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <button id="admin-sidebar-open" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                            </button>
+                            <div class="hidden lg:block">
+                                <h2 class="text-lg font-semibold text-slate-800">@yield('title', 'Admin Panel')</h2>
+                                @hasSection('subtitle')
+                                    <p class="text-sm text-slate-500">@yield('subtitle')</p>
+                                @endif
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Right Side Actions -->
-                    <div class="flex items-center space-x-4">
-                        <!-- Notifications -->
-                        <button class="relative p-2 text-gray-500 hover:text-gray-800 rounded-full hover:bg-gray-100">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                        </button>
+                        <div class="flex-1 flex justify-end items-center gap-4">
+                            <div class="relative w-full max-w-lg">
+                                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                </span>
+                                <input type="search" placeholder="Cari sesuatu..." class="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-600 placeholder:text-slate-400 focus:border-indigo-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100" />
+                            </div>
 
-                        <!-- Admin Profile Dropdown -->
-                        <div class="relative">
-                            <button id="admin-profile-dropdown" class="flex items-center space-x-2">
-                                <img class="h-8 w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'A') }}&background=3b82f6&color=fff" alt="User avatar">
-                                <span class="hidden md:inline text-sm font-medium">{{ auth()->user()->name ?? 'Admin' }}</span>
-                                <svg class="hidden md:inline w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <button class="relative h-10 w-10 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:text-indigo-600 hover:border-indigo-200">
+                                <svg class="mx-auto h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" /></svg>
+                                <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500"></span>
                             </button>
 
-                            <!-- Dropdown Menu -->
-                            <div id="admin-profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-200 z-50">
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
-                                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student Portal</a>
-                                <div class="border-t border-gray-100"></div>
-                                <button onclick="document.getElementById('logout-form').submit();" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>
+                            <div class="relative">
+                                <button id="admin-profile-trigger" class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-600 hover:border-indigo-200 hover:text-indigo-600">
+                                    <img class="h-8 w-8 rounded-xl object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=4f46e5&color=fff" alt="Avatar">
+                                    <span class="hidden sm:inline font-medium">{{ auth()->user()->name ?? 'Admin' }}</span>
+                                    <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                </button>
+                                <div id="admin-profile-menu" class="hidden absolute right-0 mt-3 w-56 rounded-2xl border border-slate-200 bg-white py-2 text-sm shadow-xl">
+                                    <p class="px-4 pb-2 text-xs font-semibold text-slate-400">AKUN</p>
+                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-slate-600 hover:bg-slate-50">Profil Saya</a>
+                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-slate-600 hover:bg-slate-50">Portal Siswa</a>
+                                    <div class="my-2 border-t border-slate-100"></div>
+                                    <button type="button" onclick="document.getElementById('admin-logout-form').submit();" class="block w-full px-4 py-2 text-left font-medium text-rose-600 hover:bg-rose-50/60">Keluar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </header>
+            </header>
 
-        <!-- Page Content -->
-        <main class="p-4 sm:p-6 lg:p-8">
-            @yield('content')
-        </main>
+            <main class="flex-1 px-4 py-6 sm:px-6 lg:px-10">
+                @yield('content')
+            </main>
+        </div>
     </div>
 
-    <!-- JavaScript -->
+    <form id="admin-logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
+        @csrf
+    </form>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const setupDropdown = (triggerId, menuId) => {
-                const trigger = document.getElementById(triggerId);
-                const menu = document.getElementById(menuId);
-                if (trigger && menu) {
-                    trigger.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        menu.classList.toggle('hidden');
-                    });
-                }
-            };
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('admin-sidebar');
+            const overlay = document.getElementById('admin-mobile-overlay');
+            const openBtn = document.getElementById('admin-sidebar-open');
+            const closeBtn = document.getElementById('admin-sidebar-close');
 
-            setupDropdown('admin-profile-dropdown', 'admin-profile-menu');
-
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-
-            if (mobileMenuButton && sidebar && overlay) {
-                mobileMenuButton.addEventListener('click', () => {
+            if (openBtn && sidebar && overlay) {
+                openBtn.addEventListener('click', () => {
                     sidebar.classList.add('open');
                     overlay.classList.remove('hidden');
                 });
+            }
+
+            if (closeBtn && sidebar && overlay) {
+                closeBtn.addEventListener('click', () => {
+                    sidebar.classList.remove('open');
+                    overlay.classList.add('hidden');
+                });
+            }
+
+            if (overlay && sidebar) {
                 overlay.addEventListener('click', () => {
                     sidebar.classList.remove('open');
                     overlay.classList.add('hidden');
                 });
             }
 
-            document.addEventListener('click', (e) => {
-                const menu = document.getElementById('admin-profile-menu');
-                const trigger = document.getElementById('admin-profile-dropdown');
-                if (menu && trigger && !menu.contains(e.target) && !trigger.contains(e.target)) {
-                    menu.classList.add('hidden');
-                }
-            });
+            const profileTrigger = document.getElementById('admin-profile-trigger');
+            const profileMenu = document.getElementById('admin-profile-menu');
+
+            if (profileTrigger && profileMenu) {
+                profileTrigger.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    profileMenu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!profileMenu.contains(event.target) && !profileTrigger.contains(event.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
         });
     </script>
 
-    <!-- Logout Form -->
-    <form method="POST" action="{{ route('logout') }}" id="logout-form" class="hidden">
-        @csrf
-    </form>
+
+    <div id="admin-confirm-overlay" class="fixed inset-0 z-[999] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm">
+        <div class="mx-4 w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-900/20">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-500">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </span>
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-900">Konfirmasi Penghapusan</h3>
+                        <p id="admin-confirm-message" class="text-sm text-slate-500">Anda yakin ingin menghapus data ini?</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3">
+                    <button type="button" id="admin-confirm-no" class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:border-indigo-200 hover:text-indigo-600">Batal</button>
+                    <button type="button" id="admin-confirm-yes" class="inline-flex items-center gap-2 rounded-2xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-rose-500/30 hover:bg-rose-700">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const overlay = document.getElementById('admin-confirm-overlay');
+            const messageEl = document.getElementById('admin-confirm-message');
+            const confirmBtn = document.getElementById('admin-confirm-yes');
+            const cancelBtn = document.getElementById('admin-confirm-no');
+            let pendingForm = null;
+
+            const closeModal = () => {
+                overlay?.classList.add('hidden');
+                overlay?.classList.remove('flex');
+                document.body.classList.remove('overflow-hidden');
+                if (messageEl) {
+                    messageEl.textContent = 'Anda yakin ingin menghapus data ini?';
+                }
+                pendingForm = null;
+            };
+
+            const openModal = (form) => {
+                pendingForm = form;
+                if (messageEl && form.dataset.confirm) {
+                    messageEl.textContent = form.dataset.confirm;
+                }
+                overlay?.classList.remove('hidden');
+                overlay?.classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+            };
+
+            overlay?.addEventListener('click', (event) => {
+                if (event.target === overlay) {
+                    closeModal();
+                }
+            });
+
+            confirmBtn?.addEventListener('click', () => {
+                if (pendingForm) {
+                    const formToSubmit = pendingForm;
+                    formToSubmit.dataset.confirmed = 'true';
+                    closeModal();
+                    formToSubmit.submit();
+                }
+            });
+
+            cancelBtn?.addEventListener('click', closeModal);
+
+            document.querySelectorAll('form[data-confirm]').forEach((form) => {
+                form.addEventListener('submit', (event) => {
+                    if (!form.dataset.confirmed) {
+                        event.preventDefault();
+                        openModal(form);
+                    } else {
+                        delete form.dataset.confirmed;
+                    }
+                });
+            });
+
+        });
+    </script>
+    @stack('scripts')
 </body>
 </html>
+

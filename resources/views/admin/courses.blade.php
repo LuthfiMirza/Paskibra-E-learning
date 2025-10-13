@@ -1,85 +1,136 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Kelola Kursus')
+@section('subtitle', 'Pengelolaan materi dan kurikulum e-learning PASKIBRA')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <!-- Header Section -->
-    <div class="mb-8 flex items-center justify-between">
+<div class="max-w-7xl mx-auto space-y-8">
+    <div class="rounded-3xl border border-slate-200 bg-white px-6 py-6 shadow-[0_25px_50px_-35px_rgba(15,23,42,0.35)] flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-800">Kelola Kursus</h1>
-            <p class="text-gray-600">Tambah, edit, dan hapus kursus pembelajaran.</p>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Manajemen Kurikulum</p>
+            <h1 class="mt-2 text-2xl font-semibold text-slate-900">Kelola Kursus</h1>
+            <p class="text-sm text-slate-500">Tambah kursus baru, atur status, dan lihat ringkasan pembelajaran.</p>
         </div>
-        <a href="{{ route('admin.courses.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
-            </svg>
-            Buat Kursus Baru
+        <a href="{{ route('admin.courses.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-700">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m7-7H5"/></svg>
+            Kursus Baru
         </a>
     </div>
 
-    <!-- Courses Table -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th scope="col" class="relative px-6 py-3">
-                        <span class="sr-only">Aksi</span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($courses as $course)
+    <div class="rounded-3xl border border-slate-200 bg-white shadow-[0_25px_45px_-35px_rgba(15,23,42,0.3)]">
+        @if(session('success'))
+            <div class="border-b border-emerald-100 bg-emerald-50 px-6 py-3 text-sm font-medium text-emerald-600">{{ session('success') }}</div>
+        @endif
+
+        <div class="flex flex-col gap-3 border-b border-slate-200/70 px-6 py-5 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+            <p>Daftar kursus yang tersedia beserta status publikasinya.</p>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                    Aktif
+                </span>
+                <span class="inline-flex items-center gap-1 rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-600">
+                    <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
+                    Non-aktif
+                </span>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200/70">
+            <form method="GET" class="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+                <div class="lg:col-span-2">
+                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Cari</label>
+                    <input type="search" name="search" value="{{ $filters['search'] ?? '' }}" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100" placeholder="Cari kursus">
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Kategori</label>
+                    <select name="category" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100">
+                        <option value="all" @selected(($filters['category'] ?? 'all') === 'all')>Semua</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category }}" @selected(($filters['category'] ?? 'all') === $category)>{{ ucfirst(str_replace('_', ' ', $category)) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Tingkat</label>
+                    <select name="difficulty" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100">
+                        <option value="all" @selected(($filters['difficulty'] ?? 'all') === 'all')>Semua</option>
+                        @foreach($difficulties as $key => $label)
+                            <option value="{{ $key }}" @selected(($filters['difficulty'] ?? 'all') === $key)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Status</label>
+                    <select name="status" class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100">
+                        <option value="all" @selected(($filters['status'] ?? 'all') === 'all')>Semua</option>
+                        <option value="active" @selected(($filters['status'] ?? 'all') === 'active')>Aktif</option>
+                        <option value="inactive" @selected(($filters['status'] ?? 'all') === 'inactive')>Non-aktif</option>
+                    </select>
+                </div>
+                <div class="flex items-end gap-2">
+                    <button type="submit" class="inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-indigo-500/30 hover:bg-indigo-700">Terapkan</button>
+                    <a href="{{ route('admin.courses.index') }}" class="inline-flex items-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:border-indigo-200 hover:text-indigo-600">Reset</a>
+                </div>
+            </form>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $course->title }}</div>
-                            <div class="text-xs text-gray-500">Oleh: {{ $course->creator->name ?? 'N/A' }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-700">{{ $course->category_display }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-700">{{ $course->difficulty_display }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @if($course->is_active)
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    Aktif
-                                </span>
-                            @else
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                    Non-Aktif
-                                </span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="{{ route('admin.courses.edit', $course) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                            <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" class="inline ml-4" onsubmit="return confirm('Hapus kursus ini?')">@csrf @method('DELETE')<button class="text-red-600 hover:text-red-900">Hapus</button></form>
-                        </td>
+                        <th class="px-6 py-3">Judul Kursus</th>
+                        <th class="px-6 py-3">Kategori</th>
+                        <th class="px-6 py-3">Level</th>
+                        <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3 text-right">Aksi</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-12">
-                            <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.168 18.477 18.582 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                </svg>
-                            </div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada kursus</h3>
-                            <p class="text-gray-500">Mulai dengan membuat kursus pertama Anda.</p>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-        
-        <!-- Pagination -->
-        <div class="px-6 py-4">
-            {{ $courses->links() }}
+                </thead>
+                <tbody class="divide-y divide-slate-200/80 bg-white">
+                    @forelse($courses as $course)
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4">
+                                <p class="font-semibold text-slate-900">{{ $course->title }}</p>
+                                <p class="text-xs text-slate-500">Disusun oleh {{ $course->creator->name ?? 'N/A' }}</p>
+                            </td>
+                            <td class="px-6 py-4 text-slate-600">{{ $course->category_display }}</td>
+                            <td class="px-6 py-4 text-slate-600">{{ $course->difficulty_display }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold {{ $course->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600' }}">
+                                    <span class="h-1.5 w-1.5 rounded-full {{ $course->is_active ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
+                                    {{ $course->is_active ? 'Aktif' : 'Non-aktif' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="inline-flex items-center gap-3">
+                                    <a href="{{ route('admin.courses.lessons.index', $course) }}" class="inline-flex h-9 items-center gap-2 rounded-xl border border-slate-200 px-3 text-xs font-semibold text-slate-500 hover:border-indigo-200 hover:text-indigo-600" title="Kelola Konten">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12M8 17h6M4 7h.01M4 12h.01M4 17h.01" /></svg>
+                                        Modul
+                                    </a>
+                                    <a href="{{ route('admin.courses.edit', $course) }}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:border-indigo-200 hover:text-indigo-600" title="Edit">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.125l-2.685.77.77-2.685a4.5 4.5 0 0 1 1.125-1.897L16.862 4.487z" /></svg>
+                                    </a>
+                                    <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" data-confirm="Hapus kursus ini?" class="inline-flex">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-transparent bg-rose-50 text-rose-500 hover:bg-rose-100" title="Hapus">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 7h12M10 11v6m4-6v6M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m2 0v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7z" /></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-16 text-center text-slate-400">Belum ada kursus yang dibuat.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex flex-col gap-4 border-t border-slate-200 px-6 py-5 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+            <p>Menampilkan <span class="font-semibold text-slate-700">{{ $courses->firstItem() }}-{{ $courses->lastItem() }}</span> dari <span class="font-semibold text-slate-700">{{ $courses->total() }}</span> kursus</p>
+            {{ $courses->onEachSide(1)->links() }}
         </div>
     </div>
 </div>

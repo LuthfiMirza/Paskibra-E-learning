@@ -43,7 +43,7 @@
         <div class="text-sm text-gray-500">Pilih aktivitas untuk memulai</div>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Mulai Belajar Card -->
         <a href="{{ route('courses.index') }}" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
             <div class="w-16 h-16 bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -95,25 +95,6 @@
             </div>
         </a>
         
-        <!-- Pencapaian Card -->
-        <a href="{{ route('achievements.index') }}" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer group relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-purple-100 opacity-50"></div>
-            <div class="relative">
-                <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
-                </div>
-                <h3 class="font-semibold text-gray-900 mb-2 text-center group-hover:text-purple-600 transition-colors">Pencapaian</h3>
-                <p class="text-sm text-gray-600 text-center mb-4">Lihat lencana dan prestasi Anda</p>
-                <div class="flex items-center justify-center text-xs text-purple-600 font-medium">
-                    <span>6 Lencana Diraih</span>
-                    <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </div>
-            </div>
-        </a>
     </div>
 </section>
 
@@ -141,12 +122,12 @@
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-gray-900 mb-2">24</div>
-            <div class="flex items-center text-sm text-green-600">
+            <div class="text-3xl font-bold text-gray-900 mb-2">{{ $stats['total_courses'] ?? 0 }}</div>
+            <div class="flex items-center text-sm text-blue-600">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                 </svg>
-                <span>+3 minggu ini</span>
+                <span>Tersedia untuk Anda</span>
             </div>
             <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
                 <div class="bg-gradient-to-r from-blue-900 to-blue-700 h-2 rounded-full transition-all duration-1000" style="width: 75%"></div>
@@ -163,12 +144,12 @@
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-gray-900 mb-2">18</div>
+            <div class="text-3xl font-bold text-gray-900 mb-2">{{ $stats['completed_quizzes'] ?? 0 }}</div>
             <div class="flex items-center text-sm text-green-600">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span>+5 minggu ini</span>
+                <span>Quiz yang telah diselesaikan</span>
             </div>
             <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
                 <div class="bg-gradient-to-r from-green-600 to-green-500 h-2 rounded-full transition-all duration-1000" style="width: 90%"></div>
@@ -185,15 +166,15 @@
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-gray-900 mb-2">85.2</div>
-            <div class="flex items-center text-sm text-green-600">
+            <div class="text-3xl font-bold text-gray-900 mb-2">{{ number_format($stats['average_score'] ?? 0, 1) }}</div>
+            <div class="flex items-center text-sm text-gray-600">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span>+2.1 dari bulan lalu</span>
+                <span>Nilai rata-rata quiz Anda</span>
             </div>
             <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-gradient-to-r from-yellow-600 to-yellow-500 h-2 rounded-full transition-all duration-1000" style="width: 85%"></div>
+                <div class="bg-gradient-to-r from-yellow-600 to-yellow-500 h-2 rounded-full transition-all duration-1000" style="width: {{ min(100, $stats['average_score'] ?? 0) }}%"></div>
             </div>
         </div>
     </div>

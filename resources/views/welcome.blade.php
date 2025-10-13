@@ -388,7 +388,7 @@
             
             <!-- Logo dan Deskripsi -->
             <div class="footer-section about">
-                <img src="{{ asset('images/logopaskib.jpg') }}" alt="Logo PASKIBRA" class="footer-logo" onerror="this.src='{{ asset('images/paskibra/logo.jpg') }}'"/>
+                <img src="{{ asset('images/logopaskib.jpg') }}" alt="Logo PASKIBRA" class="footer-logo" onerror="this.src='{{ asset('images/paskibra/new_logo.jpg') }}'"/>
                 <p>Organisasi Paskibra Wira Purusa - Membangun generasi penerus yang disiplin dan berprestasi.</p>
             </div>
 

@@ -1,602 +1,137 @@
-@extends('template-modern')
+﻿@extends('template-modern')
 
-@section('title', 'Mengerjakan Quiz - PASKIBRA E-Learning')
+@section('title', 'Kerjakan Quiz - ' . ($quiz->title ?? 'PASKIBRA WiraPurusa'))
 
 @section('content')
-<!-- Page Header -->
-<div class="mb-8">
-    <div class="bg-slate-800 rounded-xl p-8 text-white relative overflow-hidden border-l-4 border-orange-600">
-        <div class="absolute inset-0 bg-gradient-to-r from-orange-600/10 via-transparent to-red-600/10"></div>
-        <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
-        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
-        
-        <div class="relative z-10">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-3xl font-bold">Quiz Demo</h1>
-                        <p class="text-lg text-white/90">Ini adalah demo quiz untuk testing</p>
-                    </div>
+<div class="space-y-8">
+    <div class="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 px-8 py-10 text-white">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div class="space-y-4 max-w-3xl">
+                    <p class="text-xs uppercase tracking-[0.45em] text-white/60">Quiz Resmi</p>
+                    <h1 class="text-3xl font-bold leading-tight">{{ $quiz->title ?? 'Quiz Demo PASKIBRA' }}</h1>
+                    @if(!empty($quiz->description))
+                        <p class="text-white/85 text-base">{{ $quiz->description }}</p>
+                    @endif
                 </div>
-                
-                <!-- Timer (if applicable) -->
-                <div class="bg-white/20 rounded-lg p-4 text-center">
-                    <div class="text-2xl font-bold" id="timer">15:00</div>
-                    <div class="text-sm text-white/80">Waktu tersisa</div>
+                <div class="grid grid-cols-2 gap-4 text-sm text-white/90">
+                    <div class="bg-white/10 rounded-2xl p-4">
+                        <p class="text-white/60 text-xs uppercase">Durasi</p>
+                        <p class="text-xl font-semibold">{{ $quiz->time_limit ?? 15 }} menit</p>
+                    </div>
+                    <div class="bg-white/10 rounded-2xl p-4">
+                        <p class="text-white/60 text-xs uppercase">Skor kelulusan</p>
+                        <p class="text-xl font-semibold">{{ $quiz->passing_score ?? 70 }}%</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Quiz Progress -->
-<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-    <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-900">Progress Quiz</h3>
-        <span class="text-sm text-gray-500">Soal <span id="current-question">1</span> dari <span id="total-questions">5</span></span>
-    </div>
-    <div class="w-full bg-gray-200 rounded-full h-3">
-        <div id="progress-bar" class="bg-gradient-to-r from-blue-600 to-purple-600 h-3 rounded-full transition-all duration-500" style="width: 20%"></div>
-    </div>
-</div>
-
-@if(isset($questions) && $questions instanceof \Illuminate\Support\Collection && $questions->count())
-<!-- Quiz Form (Dynamic from DB) -->
-<form id="quiz-form" method="POST" action="{{ route('quizzes.submit', $quiz->id) }}" class="space-y-8">
-    @csrf
-    @foreach($questions as $idx => $q)
-    <div class="question-card bg-white rounded-xl shadow-sm border border-gray-200 p-8" data-question="{{ $idx+1 }}" {{ $idx>0 ? 'hidden' : '' }}>
-        <div class="mb-6">
-            <div class="flex items-center space-x-3 mb-4">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">{{ $idx+1 }}</div>
-                <span class="text-sm text-gray-500">Soal {{ $idx+1 }} dari {{ $questions->count() }}</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">{!! nl2br(e($q->question)) !!}</h3>
-        </div>
-        <div class="space-y-3">
-            @foreach($q->options as $opt)
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="answers[{{ $q->id }}]" value="{{ $opt->id }}" class="mr-4 text-blue-600">
-                <span class="text-gray-900">{{ $opt->option_text }}</span>
-            </label>
-            @endforeach
-        </div>
-    </div>
-    @endforeach
-    <div class="flex justify-between mt-4">
-        <button type="button" id="prev-btn" class="px-4 py-2 rounded-lg border border-gray-300" disabled>Sebelumnya</button>
-        <div>
-            <button type="button" id="next-btn" class="px-4 py-2 rounded-lg bg-blue-600 text-white">Berikutnya</button>
-            <button type="submit" id="submit-btn" class="px-4 py-2 rounded-lg bg-green-600 text-white hidden">Kumpulkan</button>
-        </div>
-    </div>
-</form>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-    let current = 1; const total = {{ $questions->count() }};
-    function show(n){
-        document.querySelectorAll('.question-card').forEach(el=>el.setAttribute('hidden','hidden'));
-        document.querySelector('.question-card[data-question="'+n+'"]').removeAttribute('hidden');
-        document.getElementById('prev-btn').disabled = n===1;
-        if(n===total){ document.getElementById('next-btn').classList.add('hidden'); document.getElementById('submit-btn').classList.remove('hidden'); }
-        else { document.getElementById('next-btn').classList.remove('hidden'); document.getElementById('submit-btn').classList.add('hidden'); }
-    }
-    document.getElementById('next-btn').addEventListener('click', function(){ if(current<total){ current++; show(current);} });
-    document.getElementById('prev-btn').addEventListener('click', function(){ if(current>1){ current--; show(current);} });
-});
-</script>
-@else
-<!-- Quiz Form (Demo static) -->
-<form id="quiz-form" method="POST" action="#" class="space-y-8">
-    @csrf
-    
-    <!-- Question 1 -->
-    <div class="question-card bg-white rounded-xl shadow-sm border border-gray-200 p-8" data-question="1">
-        <div class="mb-6">
-            <div class="flex items-center space-x-3 mb-4">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
-                <span class="text-sm text-gray-500">Soal 1 dari 5</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Apa kepanjangan dari PASKIBRA?</h3>
-        </div>
-        
-        <div class="space-y-3">
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_1" value="a" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Pasukan Kibar Bendera</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_1" value="b" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Pasukan Pengibar Bendera Pusaka</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_1" value="c" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Pasukan Khusus Bendera</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_1" value="d" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Pasukan Pembawa Bendera</span>
-            </label>
-        </div>
-    </div>
-
-    <!-- Question 2 -->
-    <div class="question-card bg-white rounded-xl shadow-sm border border-gray-200 p-8 hidden" data-question="2">
-        <div class="mb-6">
-            <div class="flex items-center space-x-3 mb-4">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
-                <span class="text-sm text-gray-500">Soal 2 dari 5</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Kapan PASKIBRA pertama kali dibentuk?</h3>
-        </div>
-        
-        <div class="space-y-3">
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_2" value="a" class="mr-4 text-blue-600">
-                <span class="text-gray-900">17 Agustus 1945</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_2" value="b" class="mr-4 text-blue-600">
-                <span class="text-gray-900">17 Agustus 1967</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_2" value="c" class="mr-4 text-blue-600">
-                <span class="text-gray-900">17 Agustus 1968</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_2" value="d" class="mr-4 text-blue-600">
-                <span class="text-gray-900">17 Agustus 1970</span>
-            </label>
-        </div>
-    </div>
-
-    <!-- Question 3 -->
-    <div class="question-card bg-white rounded-xl shadow-sm border border-gray-200 p-8 hidden" data-question="3">
-        <div class="mb-6">
-            <div class="flex items-center space-x-3 mb-4">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
-                <span class="text-sm text-gray-500">Soal 3 dari 5</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Berapa jumlah anggota PASKIBRA dalam satu tim?</h3>
-        </div>
-        
-        <div class="space-y-3">
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_3" value="a" class="mr-4 text-blue-600">
-                <span class="text-gray-900">17 orang</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_3" value="b" class="mr-4 text-blue-600">
-                <span class="text-gray-900">45 orang</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_3" value="c" class="mr-4 text-blue-600">
-                <span class="text-gray-900">68 orang</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_3" value="d" class="mr-4 text-blue-600">
-                <span class="text-gray-900">100 orang</span>
-            </label>
-        </div>
-    </div>
-
-    <!-- Question 4 -->
-    <div class="question-card bg-white rounded-xl shadow-sm border border-gray-200 p-8 hidden" data-question="4">
-        <div class="mb-6">
-            <div class="flex items-center space-x-3 mb-4">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
-                <span class="text-sm text-gray-500">Soal 4 dari 5</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Apa makna dari warna merah putih pada bendera Indonesia?</h3>
-        </div>
-        
-        <div class="space-y-3">
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_4" value="a" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Merah = keberanian, Putih = kesucian</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_4" value="b" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Merah = darah, Putih = tulang</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_4" value="c" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Merah = api, Putih = air</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_4" value="d" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Merah = matahari, Putih = bulan</span>
-            </label>
-        </div>
-    </div>
-
-    <!-- Question 5 -->
-    <div class="question-card bg-white rounded-xl shadow-sm border border-gray-200 p-8 hidden" data-question="5">
-        <div class="mb-6">
-            <div class="flex items-center space-x-3 mb-4">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">5</div>
-                <span class="text-sm text-gray-500">Soal 5 dari 5</span>
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Siapa yang pertama kali mengibarkan bendera Merah Putih?</h3>
-        </div>
-        
-        <div class="space-y-3">
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_5" value="a" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Soekarno dan Hatta</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_5" value="b" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Latief Hendraningrat</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_5" value="c" class="mr-4 text-blue-600">
-                <span class="text-gray-900">S. Suhud</span>
-            </label>
-            <label class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                <input type="radio" name="question_5" value="d" class="mr-4 text-blue-600">
-                <span class="text-gray-900">Fatmawati</span>
-            </label>
-        </div>
-    </div>
-
-    <!-- Navigation Buttons -->
-    <div class="flex justify-between items-center bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <button type="button" id="prev-btn" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-            Sebelumnya
-        </button>
-        
-        <div class="flex space-x-2">
-            <div class="w-3 h-3 bg-blue-600 rounded-full question-indicator active" data-question="1"></div>
-            <div class="w-3 h-3 bg-gray-300 rounded-full question-indicator" data-question="2"></div>
-            <div class="w-3 h-3 bg-gray-300 rounded-full question-indicator" data-question="3"></div>
-            <div class="w-3 h-3 bg-gray-300 rounded-full question-indicator" data-question="4"></div>
-            <div class="w-3 h-3 bg-gray-300 rounded-full question-indicator" data-question="5"></div>
-        </div>
-        
-        <button type="button" id="next-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-            Selanjutnya
-            <svg class="w-5 h-5 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-        </button>
-        
-        <button type="button" id="submit-btn" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors hidden">
-            Selesai Quiz
-        </button>
-    </div>
-</form>
-@endif
-
-<!-- Submit Confirmation Modal -->
-<div id="submit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-    <div class="bg-white rounded-xl p-8 max-w-md mx-4">
-        <div class="text-center">
-            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        <div class="p-6 lg:p-8 space-y-4 text-sm text-gray-600">
+            <p class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Selesaikan Quiz?</h3>
-            <p class="text-gray-600 mb-6">Pastikan semua jawaban sudah benar. Anda tidak dapat mengubah jawaban setelah mengirim.</p>
-            <div class="flex space-x-3">
-                <button type="button" id="cancel-submit" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                    Batal
-                </button>
-                <button type="button" id="confirm-submit" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    Ya, Selesai
-                </button>
-            </div>
+                Jawab setiap pertanyaan sesuai instruksi. Klik tombol "Kumpulkan Jawaban" setelah selesai.
+            </p>
+            <p class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Pastikan koneksi stabil. Jawaban akan tersimpan setelah Anda menekan tombol submit.
+            </p>
         </div>
     </div>
-</div>
 
-<!-- Quiz Result Modal -->
-<div id="result-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full mx-4 overflow-hidden shadow-2xl">
-        <!-- Modal Header -->
-        <div id="result-header" class="px-8 py-6 text-center">
-            <!-- Success Header -->
-            <div id="success-header" class="hidden">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-green-800 mb-2">🎉 Selamat!</h3>
-                <p class="text-green-600 font-medium">Anda berhasil lulus quiz!</p>
-            </div>
-            
-            <!-- Failure Header -->
-            <div id="failure-header" class="hidden">
-                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-red-800 mb-2">😔 Belum Berhasil</h3>
-                <p class="text-red-600 font-medium">Anda belum mencapai nilai minimum</p>
-            </div>
-        </div>
-        
-        <!-- Modal Body -->
-        <div class="px-8 pb-6">
-            <!-- Score Display -->
-            <div class="bg-gray-50 rounded-xl p-6 mb-6">
-                <div class="text-center">
-                    <div class="text-4xl font-bold mb-2" id="score-display">0%</div>
-                    <div class="text-gray-600 mb-4">Nilai Anda</div>
-                    
-                    <!-- Progress Bar -->
-                    <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
-                        <div id="score-progress" class="h-3 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+    <form method="POST" action="{{ route('quizzes.submit', $quiz->id ?? 0) }}" class="space-y-6">
+        @csrf
+        @if(isset($questions) && $questions->count())
+            @foreach($questions as $index => $question)
+                <section class="bg-white border border-gray-200 rounded-3xl shadow-sm p-6 sm:p-8 space-y-5">
+                    <header class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                        <div class="space-y-2">
+                            <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700">
+                                Soal {{ $index + 1 }} dari {{ $questions->count() }}
+                            </span>
+                            <h2 class="text-xl font-semibold text-gray-900">{!! nl2br(e($question->question)) !!}</h2>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs text-gray-500">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 font-semibold">{{ ucfirst(str_replace('_', ' ', $question->type)) }}</span>
+                            <span>•</span>
+                            <span>{{ $question->points ?? 10 }} poin</span>
+                        </div>
+                    </header>
+
+                    <div class="space-y-3">
+                        @if(in_array($question->type, ['multiple_choice', 'true_false']) && $question->option_collection->count())
+                            @foreach($question->option_collection as $option)
+                                <label class="flex items-start gap-3 p-4 border border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50/40 transition-all">
+                                    <input
+                                        type="radio"
+                                        class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                                        name="answers[{{ $question->id }}]"
+                                        value="{{ $option->value }}"
+                                        required
+                                    >
+                                    <span class="text-sm text-gray-800">{{ $option->option_text }}</span>
+                                </label>
+                            @endforeach
+                        @elseif($question->type === 'fill_blank')
+                            <input
+                                type="text"
+                                name="answers[{{ $question->id }}]"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Tulis jawaban singkat Anda di sini"
+                                required
+                            >
+                        @elseif($question->type === 'essay')
+                            <textarea
+                                name="answers[{{ $question->id }}]"
+                                rows="6"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Tulis jawaban esai Anda di sini"
+                                required
+                            ></textarea>
+                        @else
+                            <input
+                                type="text"
+                                name="answers[{{ $question->id }}]"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Masukkan jawaban Anda"
+                                required
+                            >
+                        @endif
                     </div>
-                    
-                    <!-- Stats -->
-                    <div class="grid grid-cols-3 gap-4 text-center">
-                        <div>
-                            <div class="text-2xl font-bold text-green-600" id="correct-count">0</div>
-                            <div class="text-sm text-gray-500">Benar</div>
+
+                    @if(!empty($question->image))
+                        <div class="rounded-xl overflow-hidden border border-gray-200">
+                            <img src="{{ asset('storage/' . $question->image) }}" alt="Ilustrasi soal" class="w-full h-auto">
                         </div>
-                        <div>
-                            <div class="text-2xl font-bold text-red-600" id="wrong-count">0</div>
-                            <div class="text-sm text-gray-500">Salah</div>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold text-blue-600" id="total-count">5</div>
-                            <div class="text-sm text-gray-500">Total</div>
-                        </div>
-                    </div>
+                    @endif
+                </section>
+            @endforeach
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white border border-gray-200 rounded-3xl shadow-sm p-6">
+                <div class="text-sm text-gray-600">
+                    Pastikan semua jawaban telah terisi sebelum mengumpulkan.
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('quizzes.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-semibold text-gray-600 rounded-lg hover:bg-gray-100">
+                        Batalkan
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg shadow-sm">
+                        Kumpulkan Jawaban
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-            
-            <!-- Additional Info -->
-            <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                <div class="flex items-center justify-between text-sm">
-                    <span class="text-blue-800 font-medium">Nilai Minimum:</span>
-                    <span class="text-blue-600">70%</span>
-                </div>
-                <div class="flex items-center justify-between text-sm mt-2">
-                    <span class="text-blue-800 font-medium">Waktu Pengerjaan:</span>
-                    <span class="text-blue-600" id="time-taken">-</span>
-                </div>
+        @else
+            <div class="bg-white border border-dashed border-gray-300 rounded-3xl p-12 text-center">
+                <h2 class="text-xl font-semibold text-gray-900 mb-2">Pertanyaan belum disiapkan</h2>
+                <p class="text-gray-600">Instruktur belum menambahkan soal untuk quiz ini. Silakan hubungi admin atau kembali lagi nanti.</p>
             </div>
-            
-            <!-- Action Buttons -->
-            <div class="flex space-x-3">
-                <button type="button" id="review-answers" class="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium">
-                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                    </svg>
-                    Lihat Jawaban
-                </button>
-                <button type="button" id="back-to-quiz" class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6a2 2 0 01-2 2H10a2 2 0 01-2-2V5z"></path>
-                    </svg>
-                    Kembali ke Quiz
-                </button>
-            </div>
-        </div>
-    </div>
+        @endif
+    </form>
 </div>
-
-<script>
-let currentQuestion = 1;
-const totalQuestions = 5;
-let timeLeft = 15 * 60; // 15 minutes in seconds
-
-// Timer functionality
-function updateTimer() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    
-    if (timeLeft <= 0) {
-        // Auto submit when time is up
-        submitQuiz();
-        return;
-    }
-    
-    timeLeft--;
-}
-
-// Start timer
-const timerInterval = setInterval(updateTimer, 1000);
-
-// Question navigation
-function showQuestion(questionNum) {
-    // Hide all questions
-    document.querySelectorAll('.question-card').forEach(card => {
-        card.classList.add('hidden');
-    });
-    
-    // Show current question
-    document.querySelector(`[data-question="${questionNum}"]`).classList.remove('hidden');
-    
-    // Update indicators
-    document.querySelectorAll('.question-indicator').forEach(indicator => {
-        indicator.classList.remove('active', 'bg-blue-600');
-        indicator.classList.add('bg-gray-300');
-    });
-    document.querySelector(`.question-indicator[data-question="${questionNum}"]`).classList.add('active', 'bg-blue-600');
-    document.querySelector(`.question-indicator[data-question="${questionNum}"]`).classList.remove('bg-gray-300');
-    
-    // Update progress
-    const progress = (questionNum / totalQuestions) * 100;
-    document.getElementById('progress-bar').style.width = `${progress}%`;
-    document.getElementById('current-question').textContent = questionNum;
-    
-    // Update buttons
-    document.getElementById('prev-btn').disabled = questionNum === 1;
-    
-    if (questionNum === totalQuestions) {
-        document.getElementById('next-btn').classList.add('hidden');
-        document.getElementById('submit-btn').classList.remove('hidden');
-    } else {
-        document.getElementById('next-btn').classList.remove('hidden');
-        document.getElementById('submit-btn').classList.add('hidden');
-    }
-}
-
-// Navigation event listeners
-document.getElementById('prev-btn').addEventListener('click', () => {
-    if (currentQuestion > 1) {
-        currentQuestion--;
-        showQuestion(currentQuestion);
-    }
-});
-
-document.getElementById('next-btn').addEventListener('click', () => {
-    if (currentQuestion < totalQuestions) {
-        currentQuestion++;
-        showQuestion(currentQuestion);
-    }
-});
-
-// Submit functionality
-document.getElementById('submit-btn').addEventListener('click', () => {
-    document.getElementById('submit-modal').classList.remove('hidden');
-});
-
-document.getElementById('cancel-submit').addEventListener('click', () => {
-    document.getElementById('submit-modal').classList.add('hidden');
-});
-
-document.getElementById('confirm-submit').addEventListener('click', () => {
-    submitQuiz();
-});
-
-function submitQuiz() {
-    clearInterval(timerInterval);
-    
-    // Hide submit confirmation modal
-    document.getElementById('submit-modal').classList.add('hidden');
-    
-    // Collect answers
-    const answers = {};
-    for (let i = 1; i <= totalQuestions; i++) {
-        const selectedAnswer = document.querySelector(`input[name="question_${i}"]:checked`);
-        if (selectedAnswer) {
-            answers[`question_${i}`] = selectedAnswer.value;
-        }
-    }
-    
-    // Demo scoring (in real app, this would be done server-side)
-    const correctAnswers = {
-        'question_1': 'b', // Pasukan Pengibar Bendera Pusaka
-        'question_2': 'b', // 17 Agustus 1967
-        'question_3': 'a', // 17 orang
-        'question_4': 'a', // Merah = keberanian, Putih = kesucian
-        'question_5': 'b'  // Latief Hendraningrat
-    };
-    
-    let score = 0;
-    let correct = 0;
-    
-    for (let question in correctAnswers) {
-        if (answers[question] === correctAnswers[question]) {
-            correct++;
-        }
-    }
-    
-    score = Math.round((correct / totalQuestions) * 100);
-    const wrong = totalQuestions - correct;
-    const passed = score >= 70;
-    
-    // Calculate time taken
-    const totalTime = 15 * 60; // 15 minutes in seconds
-    const timeTaken = totalTime - timeLeft;
-    const minutesTaken = Math.floor(timeTaken / 60);
-    const secondsTaken = timeTaken % 60;
-    const timeDisplay = `${minutesTaken}:${secondsTaken.toString().padStart(2, '0')}`;
-    
-    // Show result popup
-    showResultModal(score, correct, wrong, passed, timeDisplay);
-    
-    // Clear saved answers
-    clearSavedAnswers();
-}
-
-function showResultModal(score, correct, wrong, passed, timeTaken) {
-    // Update score display
-    document.getElementById('score-display').textContent = `${score}%`;
-    document.getElementById('correct-count').textContent = correct;
-    document.getElementById('wrong-count').textContent = wrong;
-    document.getElementById('time-taken').textContent = timeTaken;
-    
-    // Show appropriate header
-    if (passed) {
-        document.getElementById('success-header').classList.remove('hidden');
-        document.getElementById('failure-header').classList.add('hidden');
-        document.getElementById('score-progress').className = 'bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-1000 ease-out';
-    } else {
-        document.getElementById('success-header').classList.add('hidden');
-        document.getElementById('failure-header').classList.remove('hidden');
-        document.getElementById('score-progress').className = 'bg-gradient-to-r from-red-500 to-red-600 h-3 rounded-full transition-all duration-1000 ease-out';
-    }
-    
-    // Show result modal
-    document.getElementById('result-modal').classList.remove('hidden');
-    
-    // Animate progress bar
-    setTimeout(() => {
-        document.getElementById('score-progress').style.width = `${score}%`;
-    }, 300);
-}
-
-// Result modal event listeners
-document.getElementById('back-to-quiz').addEventListener('click', () => {
-    window.location.href = '{{ route("quizzes.index") }}';
-});
-
-document.getElementById('review-answers').addEventListener('click', () => {
-    // In a real app, this would show detailed answer review
-    alert('Fitur review jawaban akan segera tersedia!');
-});
-
-// Auto-save functionality (optional)
-document.querySelectorAll('input[type="radio"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-        // Save to localStorage for recovery
-        const answers = {};
-        for (let i = 1; i <= totalQuestions; i++) {
-            const selectedAnswer = document.querySelector(`input[name="question_${i}"]:checked`);
-            if (selectedAnswer) {
-                answers[`question_${i}`] = selectedAnswer.value;
-            }
-        }
-        localStorage.setItem('quiz_answers', JSON.stringify(answers));
-    });
-});
-
-// Load saved answers on page load
-window.addEventListener('load', () => {
-    const savedAnswers = localStorage.getItem('quiz_answers');
-    if (savedAnswers) {
-        const answers = JSON.parse(savedAnswers);
-        for (let question in answers) {
-            const radio = document.querySelector(`input[name="${question}"][value="${answers[question]}"]`);
-            if (radio) {
-                radio.checked = true;
-            }
-        }
-    }
-});
-
-// Clear saved answers when quiz is submitted
-function clearSavedAnswers() {
-    localStorage.removeItem('quiz_answers');
-}
-</script>
 @endsection

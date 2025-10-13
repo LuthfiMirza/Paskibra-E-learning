@@ -227,7 +227,7 @@
         <!-- Sidebar Header -->
         <div class="flex items-center justify-between h-16 bg-black bg-opacity-20 px-6">
             <div class="flex items-center space-x-3">
-                <img class="h-10 w-10 rounded-lg object-cover" src="{{ asset('images/logopaskib.jpg') }}" alt="PASKIBRA Logo" onerror="this.src='{{ asset('images/paskibra/logo.jpg') }}'">
+                <img class="h-10 w-10 rounded-lg object-cover" src="{{ asset('images/logopaskib.jpg') }}" alt="PASKIBRA Logo" onerror="this.src='{{ asset('images/paskibra/new_logo.jpg') }}'">
                 <div>
                     <div class="text-white font-bold text-lg font-display">PASKIBRA</div>
                     <div class="text-blue-200 text-xs">WiraPurusa E-Learning</div>

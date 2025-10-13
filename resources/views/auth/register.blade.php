@@ -34,12 +34,7 @@
         <!-- Angkatan -->
         <div class="mb-4">
             <label for="angkatan" class="form-label">Angkatan</label>
-            <select id="angkatan" class="form-input w-full" name="angkatan">
-                <option value="">Pilih Angkatan</option>
-                @for($year = date('Y'); $year >= 2020; $year--)
-                    <option value="{{ $year }}" {{ old('angkatan') == $year ? 'selected' : '' }}>{{ $year }}</option>
-                @endfor
-            </select>
+            <input id="angkatan" class="form-input w-full" type="text" name="angkatan" value="{{ old('angkatan') }}" placeholder="Contoh: 2023" />
             @error('angkatan')
                 <div class="error-message">{{ $message }}</div>
             @enderror

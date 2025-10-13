@@ -10,7 +10,12 @@ class Report extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'type', 'filters', 'period_start', 'period_end', 'created_by'
+        'title',
+        'type',
+        'filters',
+        'period_start',
+        'period_end',
+        'created_by',
     ];
 
     protected $casts = [
@@ -24,4 +29,3 @@ class Report extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 }
-

@@ -41,7 +41,7 @@
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Tingkat Kesulitan</label>
                         <select name="difficulty" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                            @php $diff=['basic'=>'Dasar','intermediate'=>'Menengah','advanced'=>'Lanjutan']; @endphp
+                            @php $diff=['umum'=>'Umum','calon_paskibra'=>'Calon Paskibra','wiramuda'=>'Wiramuda','wiratama'=>'Wiratama','instruktur_muda'=>'Instruktur Muda','instruktur'=>'Instruktur']; @endphp
                             @foreach($diff as $k=>$v)
                                 <option value="{{ $k }}" {{ old('difficulty', $course->difficulty)==$k ? 'selected' : '' }}>{{ $v }}</option>
                             @endforeach
@@ -67,7 +67,7 @@
                 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold">Simpan Perubahan</button>
             </div>
         </form>
-        <form method="POST" action="{{ route('admin.courses.destroy', $course) }}" class="mt-4" onsubmit="return confirm('Hapus kursus ini?')">
+        <form method="POST" action="{{ route('admin.courses.destroy', $course) }}" class="mt-4" data-confirm="Hapus kursus ini?">
             @csrf
             @method('DELETE')
             <button class="text-red-600 hover:text-red-800">Hapus Kursus</button>

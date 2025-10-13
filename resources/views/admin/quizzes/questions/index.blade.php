@@ -33,17 +33,19 @@
                     <td class="px-4 py-3 align-top w-16">{{ $q->order }}</td>
                     <td class="px-4 py-3">
                         <div class="font-medium text-slate-900">{{ $q->question }}</div>
-                        <ul class="mt-2 text-slate-600 list-disc pl-5">
-                            @foreach($q->options as $opt)
+                        <ul class="mt-2 text-slate-600 list-disc pl-5 space-y-1">
+                            @forelse($q->option_collection as $opt)
                                 <li>{!! $opt->is_correct ? '<span class="text-green-600 font-semibold">[Benar]</span>' : '' !!} {{ $opt->option_text }}</li>
-                            @endforeach
+                            @empty
+                                <li class="text-xs text-slate-400 italic">Belum ada opsi jawaban.</li>
+                            @endforelse
                         </ul>
                     </td>
                     <td class="px-4 py-3 text-center">{{ str_replace('_', ' ', ucfirst($q->type)) }}</td>
                     <td class="px-4 py-3 text-center">{{ $q->points }}</td>
                     <td class="px-4 py-3 text-right">
                         <a href="{{ route('admin.quizzes.questions.edit', [$quiz, $q]) }}" class="text-blue-600 hover:text-blue-800">Edit</a>
-                        <form action="{{ route('admin.quizzes.questions.destroy', [$quiz, $q]) }}" method="POST" class="inline ml-3" onsubmit="return confirm('Hapus pertanyaan ini?')">@csrf @method('DELETE')<button class="text-red-600 hover:text-red-800">Hapus</button></form>
+                        <form action="{{ route('admin.quizzes.questions.destroy', [$quiz, $q]) }}" method="POST" class="inline ml-3" data-confirm="Hapus pertanyaan ini?">@csrf @method('DELETE')<button class="text-red-600 hover:text-red-800">Hapus</button></form>
                     </td>
                 </tr>
                 @empty

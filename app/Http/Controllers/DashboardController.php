@@ -16,20 +16,17 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         
-        // Temporary fix: Use the standalone dashboard with working CSS
-        return view('dashboard');
+        // Get real-time statistics from database
+        $stats = [
+            'total_courses' => Course::where('is_active', true)->count(),
+            'total_quizzes' => Quiz::where('is_active', true)->count(),
+            'completed_quizzes' => QuizAttempt::where('user_id', $user->id)->completed()->count(),
+            'average_score' => QuizAttempt::where('user_id', $user->id)
+                ->completed()
+                ->avg('score') ?? 0,
+        ];
         
-        // Original role-based routing (commented out for now)
-        /*
-        // Get statistics based on user role
-        if ($user->isAdmin()) {
-            return $this->adminDashboard();
-        } elseif ($user->isInstructor()) {
-            return $this->instructorDashboard();
-        } else {
-            return $this->memberDashboard();
-        }
-        */
+        return view('dashboard', compact('stats'));
     }
 
     private function adminDashboard()

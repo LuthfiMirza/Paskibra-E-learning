@@ -28,10 +28,10 @@
 
         <div id="mc-section" class="space-y-3">
             <label class="block text-sm text-slate-600">Opsi Jawaban</label>
-            @php $opts = old('options', $question->options->pluck('option_text')->toArray()); $correctId = collect($question->options)->firstWhere('is_correct', true)->id ?? null; @endphp
+            @php $opts = old('options', $question->option_collection->pluck('option_text')->toArray()); $correctId = $question->option_collection->firstWhere('is_correct', true)->id ?? null; @endphp
             @for($i=0;$i<max(4,count($opts));$i++)
             <div class="flex items-center gap-3">
-                <input type="radio" name="correct_option" value="{{ $i }}" class="text-blue-600" {{ old('correct_option', ($opts[$i] ?? null) && isset($question->options[$i]) && $question->options[$i]->id==$correctId ? $i : null) == $i ? 'checked' : '' }}>
+                <input type="radio" name="correct_option" value="{{ $i }}" class="text-blue-600" {{ old('correct_option', ($opts[$i] ?? null) && isset($question->option_collection[$i]) && $question->option_collection[$i]->id==$correctId ? $i : null) == $i ? 'checked' : '' }}>
                 <input name="options[{{ $i }}]" value="{{ $opts[$i] ?? '' }}" class="flex-1 border border-slate-300 rounded-lg px-3 py-2" placeholder="Teks opsi">
             </div>
             @endfor
@@ -39,7 +39,7 @@
 
         <div id="tf-section" class="space-y-3 hidden">
             <label class="block text-sm text-slate-600">Jawaban Benar</label>
-            @php $tf = $correctId ? (optional($question->options->firstWhere('id',$correctId))->option_text==='True' ? 'true' : 'false') : 'true'; @endphp
+            @php $tf = $correctId ? (optional($question->option_collection->firstWhere('id',$correctId))->option_text==='True' ? 'true' : 'false') : 'true'; @endphp
             <div class="flex items-center gap-6">
                 <label class="inline-flex items-center"><input type="radio" name="tf_correct" value="true" class="text-blue-600" {{ old('tf_correct', $tf)=='true' ? 'checked' : '' }}> <span class="ml-2">True</span></label>
                 <label class="inline-flex items-center"><input type="radio" name="tf_correct" value="false" class="text-blue-600" {{ old('tf_correct', $tf)=='false' ? 'checked' : '' }}> <span class="ml-2">False</span></label>

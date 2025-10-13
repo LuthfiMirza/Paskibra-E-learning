@@ -59,4 +59,44 @@ class QuizQuestion extends Model
     {
         return $this->hasMany(QuizAnswer::class);
     }
+
+    /**
+     * Get normalized options for rendering regardless of storage strategy.
+     */
+    public function getOptionCollectionAttribute()
+    {
+        $relationOptions = $this->relationLoaded('options') ? $this->getRelation('options') : null;
+
+        if ($relationOptions instanceof \Illuminate\Support\Collection && $relationOptions->isNotEmpty()) {
+            return $relationOptions->map(function ($option) {
+                return (object) [
+                    'id' => $option->id,
+                    'value' => (string) $option->id,
+                    'option_text' => $option->option_text,
+                    'is_correct' => (bool) $option->is_correct,
+                ];
+            });
+        }
+
+        $arrayOptions = $this->getAttribute('options');
+        if (!is_array($arrayOptions) || empty($arrayOptions)) {
+            return collect();
+        }
+
+        $correctAnswers = (array) $this->correct_answer;
+
+        return collect($arrayOptions)->map(function ($label, $key) use ($correctAnswers) {
+            $value = (string) $key;
+            $text = is_array($label) ? json_encode($label) : $label;
+            $isCorrect = in_array($key, $correctAnswers, false) || in_array((string) $key, $correctAnswers, false);
+
+            return (object) [
+                'id' => $this->id . '_' . $key,
+                'value' => $value,
+                'option_text' => $text,
+                'is_correct' => $isCorrect,
+            ];
+        });
+    }
+
 }

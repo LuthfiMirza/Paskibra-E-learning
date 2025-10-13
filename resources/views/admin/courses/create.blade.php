@@ -54,9 +54,12 @@
                     <div class="mb-6">
                         <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-2">Tingkat Kesulitan</label>
                         <select name="difficulty" id="difficulty" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                            <option value="basic">Dasar</option>
-                            <option value="intermediate">Menengah</option>
-                            <option value="advanced">Lanjutan</option>
+                            <option value="umum">Umum</option>
+                            <option value="calon_paskibra">Calon Paskibra</option>
+                            <option value="wiramuda">Wiramuda</option>
+                            <option value="wiratama">Wiratama</option>
+                            <option value="instruktur_muda">Instruktur Muda</option>
+                            <option value="instruktur">Instruktur</option>
                         </select>
                     </div>
 
