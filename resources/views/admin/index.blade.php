@@ -12,8 +12,7 @@
                 [
                     'label' => 'Total Pengguna',
                     'value' => number_format($stats['total_users'] ?? 0),
-                    'delta' => '+12%',
-                    'deltaPositive' => true,
+                    'trend' => $trends['total_users'] ?? null,
                     'iconColor' => 'text-indigo-500',
                     'iconBg' => 'bg-indigo-100',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11a4 4 0 118 0 4 4 0 01-8 0z"/>',
@@ -21,8 +20,7 @@
                 [
                     'label' => 'Total Kursus',
                     'value' => number_format($stats['total_courses'] ?? 0),
-                    'delta' => '+6%',
-                    'deltaPositive' => true,
+                    'trend' => $trends['total_courses'] ?? null,
                     'iconColor' => 'text-sky-500',
                     'iconBg' => 'bg-sky-100',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 7h4a2 2 0 012 2v11"/>',
@@ -30,8 +28,7 @@
                 [
                     'label' => 'Pengguna Aktif Hari Ini',
                     'value' => number_format($stats['active_users_today'] ?? 0),
-                    'delta' => '+3%',
-                    'deltaPositive' => true,
+                    'trend' => $trends['active_users_today'] ?? null,
                     'iconColor' => 'text-amber-500',
                     'iconBg' => 'bg-amber-100',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>',
@@ -39,8 +36,7 @@
                 [
                     'label' => 'Rata-rata Skor Kuis',
                     'value' => number_format($stats['average_quiz_score'] ?? 0, 1) . '%',
-                    'delta' => '+1.4%',
-                    'deltaPositive' => true,
+                    'trend' => $trends['average_quiz_score'] ?? null,
                     'iconColor' => 'text-emerald-500',
                     'iconBg' => 'bg-emerald-100',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
@@ -55,9 +51,26 @@
                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ $card['label'] }}</p>
                 <div class="mt-4 flex flex-wrap items-center gap-3">
                     <p class="text-3xl font-semibold text-slate-900">{{ $card['value'] }}</p>
-                    <span class="inline-flex items-center gap-1 rounded-full {{ $card['deltaPositive'] ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600' }} px-3 py-1 text-xs font-semibold">
-                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $card['deltaPositive'] ? 'M5 10l7-7m0 0l7 7m-7-7v18' : 'M19 14l-7 7m0 0l-7-7m7 7V3' }}"/></svg>
-                        {{ $card['delta'] }}
+                    @php
+                        $trend = $card['trend'] ?? null;
+                        $trendDirection = $trend['direction'] ?? 'neutral';
+                        $deltaText = $trend['formatted'] ?? '—';
+                        $badgeClasses = match ($trendDirection) {
+                            'up' => 'bg-emerald-50 text-emerald-600',
+                            'down' => 'bg-rose-50 text-rose-600',
+                            default => 'bg-slate-100 text-slate-500',
+                        };
+                        $trendIcon = match ($trendDirection) {
+                            'down' => 'M19 14l-7 7m0 0l-7-7m7 7V3',
+                            'neutral' => 'M4 12h16',
+                            default => 'M5 10l7-7m0 0l7 7m-7-7v18',
+                        };
+                    @endphp
+                    <span class="inline-flex items-center gap-1 rounded-full {{ $badgeClasses }} px-3 py-1 text-xs font-semibold">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $trendIcon }}"/>
+                        </svg>
+                        {{ $deltaText }}
                     </span>
                     <span class="text-xs font-medium text-slate-400">@lang('vs bulan lalu')</span>
                 </div>
