@@ -4,6 +4,7 @@
 
 @section('content')
 @php
+    use Illuminate\Support\Str;
 
     $contentTypeLabels = [
         'text' => 'Materi Teks',
@@ -12,6 +13,30 @@
         'pdf' => 'Materi PDF',
         'interactive' => 'Materi Interaktif',
     ];
+
+    $extractYoutubeId = static function (?string $url): ?string {
+        if (! $url) {
+            return null;
+        }
+
+        $parsed = parse_url($url);
+        if (! $parsed || ! isset($parsed['host'])) {
+            return null;
+        }
+
+        $host = Str::lower($parsed['host']);
+
+        if (Str::contains($host, 'youtube.com')) {
+            parse_str($parsed['query'] ?? '', $query);
+            return $query['v'] ?? null;
+        }
+
+        if (Str::contains($host, 'youtu.be')) {
+            return trim($parsed['path'], '/');
+        }
+
+        return null;
+    };
 @endphp
 
 <div class="grid gap-6 lg:grid-cols-[2fr,1fr]">
@@ -38,22 +63,48 @@
 
         <div class="p-6 sm:p-10 space-y-8">
             <section class="space-y-4">
-                @if($lesson->content_type === 'video' && $lesson->file_path)
+                @php
+                    $fileUrl = $lesson->file_url;
+                    $fileExtension = $lesson->file_path ? Str::lower(pathinfo(parse_url($lesson->file_path, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION)) : null;
+                    $youtubeId = $extractYoutubeId($fileUrl) ?? $extractYoutubeId($lesson->content);
+                    $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp', 'avif'];
+                    $videoExtensions = ['mp4', 'mov', 'avi', 'mkv', 'webm'];
+                    $audioExtensions = ['mp3', 'mpeg', 'wav', 'ogg', 'aac'];
+                @endphp
+
+                @if($youtubeId)
+                    <div class="aspect-video rounded-2xl overflow-hidden bg-black">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ $youtubeId }}?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                @elseif($fileUrl && in_array($fileExtension, $videoExtensions))
                     <div class="aspect-video rounded-2xl overflow-hidden bg-black">
                         <video class="w-full h-full" controls>
-                            <source src="{{ asset('storage/' . $lesson->file_path) }}" type="video/mp4">
+                            <source src="{{ $fileUrl }}" type="video/mp4">
                             Browser Anda tidak mendukung pemutar video.
                         </video>
                     </div>
-                @elseif($lesson->content_type === 'audio' && $lesson->file_path)
+                @elseif($fileUrl && in_array($fileExtension, $audioExtensions))
                     <div class="rounded-2xl border border-gray-200 bg-gray-50 p-6">
                         <audio controls class="w-full">
-                            <source src="{{ asset('storage/' . $lesson->file_path) }}" type="audio/mpeg">
+                            <source src="{{ $fileUrl }}" type="audio/mpeg">
                             Browser Anda tidak mendukung pemutar audio.
                         </audio>
                     </div>
-                @elseif($lesson->content_type === 'pdf' && $lesson->file_path)
-                    <iframe src="{{ asset('storage/' . $lesson->file_path) }}" class="w-full min-h-[600px] border border-gray-200 rounded-2xl"></iframe>
+                @elseif($fileUrl && $fileExtension === 'pdf')
+                    <div class="rounded-2xl border border-gray-200 overflow-hidden bg-gray-50">
+                        <object data="{{ $fileUrl }}#toolbar=1&navpanes=0" type="application/pdf" class="w-full min-h-[650px]">
+                            <div class="p-6 space-y-4 text-center">
+                                <p class="text-gray-600">Dokumen PDF tidak dapat ditampilkan otomatis di browser ini.</p>
+                                <a href="{{ $fileUrl }}" target="_blank" rel="noopener" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg">
+                                    Unduh / Buka PDF
+                                </a>
+                            </div>
+                        </object>
+                    </div>
+                @elseif($fileUrl && in_array($fileExtension, $imageExtensions))
+                    <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50">
+                        <img src="{{ $fileUrl }}" alt="{{ $lesson->title }}" class="w-full h-auto object-contain">
+                    </div>
                 @elseif($lesson->content_type === 'interactive')
                     <div class="rounded-2xl border border-dashed border-blue-300 bg-blue-50 p-8 text-center">
                         <h2 class="text-lg font-semibold text-blue-900 mb-2">Materi Interaktif</h2>
@@ -61,9 +112,24 @@
                     </div>
                 @endif
 
-                <div class="prose max-w-none text-gray-800 leading-relaxed">
-                    {!! nl2br(e($lesson->content)) !!}
-                </div>
+                @if(trim($lesson->content ?? '') !== '')
+                    @php
+                        $allowedTags = '<p><br><strong><em><u><ol><ul><li><blockquote><h1><h2><h3><h4><h5><h6><span><div><a><img>';
+                        $contentHtml = strip_tags($lesson->content, $allowedTags);
+
+                        $contentHtml = preg_replace_callback(
+                            '/src\\s*=\\s*["\\\'](?:' . preg_quote(url('/'), '/') . ')?\\/?storage\\/(.+?)["\\\']/i',
+                            function ($matches) {
+                                $path = ltrim($matches[1], '/');
+                                return 'src="' . route('lessons.media', ['path' => $path]) . '"';
+                            },
+                            $contentHtml
+                        );
+                    @endphp
+                    <div class="prose max-w-none text-gray-800 leading-relaxed prose-img:rounded-2xl prose-img:border prose-img:border-gray-200 prose-img:shadow-sm">
+                        {!! $contentHtml !!}
+                    </div>
+                @endif
             </section>
 
             <section class="rounded-2xl border border-gray-200 bg-gray-50 p-6">

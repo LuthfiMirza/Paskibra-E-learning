@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 class CourseController extends Controller
 {
     /**
@@ -125,6 +126,51 @@ class CourseController extends Controller
             'currentIndex' => $currentIndex === false ? 0 : $currentIndex,
             'previousLesson' => $previousLesson,
             'nextLesson' => $nextLesson,
+        ]);
+    }
+
+    /**
+     * Stream or download a lesson attachment.
+     */
+    public function file(Request $request, Lesson $lesson)
+    {
+        abort_unless($lesson->file_path, 404);
+
+        $disk = Storage::disk('public');
+
+        if (! $disk->exists($lesson->file_path)) {
+            abort(404);
+        }
+
+        $filename = basename($lesson->file_path);
+        $mimeType = $disk->mimeType($lesson->file_path) ?? 'application/octet-stream';
+        $disposition = $request->boolean('download') ? 'attachment' : 'inline';
+
+        return $disk->response($lesson->file_path, $filename, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => $disposition . '; filename="' . $filename . '"',
+        ]);
+    }
+
+    /**
+     * Serve media assets referenced from lesson content.
+     */
+    public function media(Request $request, string $path)
+    {
+        $normalizedPath = str_replace(['..', '\\'], '', urldecode($path));
+
+        $disk = Storage::disk('public');
+        if (! $disk->exists($normalizedPath)) {
+            abort(404);
+        }
+
+        $filename = basename($normalizedPath);
+        $mimeType = $disk->mimeType($normalizedPath) ?? 'application/octet-stream';
+        $disposition = $request->boolean('download') ? 'attachment' : 'inline';
+
+        return $disk->response($normalizedPath, $filename, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => $disposition . '; filename="' . $filename . '"',
         ]);
     }
 }

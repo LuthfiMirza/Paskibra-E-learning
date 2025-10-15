@@ -91,9 +91,12 @@ class Quiz extends Model
     public function getDifficultyDisplayAttribute()
     {
         $difficulties = [
-            'basic' => 'Dasar',
-            'intermediate' => 'Menengah',
-            'advanced' => 'Lanjutan',
+            'umum' => 'Umum',
+            'calon_paskibra' => 'Calon Paskibra',
+            'wiramuda' => 'Wiramuda',
+            'wiratama' => 'Wiratama',
+            'instruktur_muda' => 'Instruktur Muda',
+            'instruktur' => 'Instruktur',
         ];
 
         return $difficulties[$this->difficulty] ?? $this->difficulty;

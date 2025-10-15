@@ -67,12 +67,10 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-600">Tingkat Kesulitan</label>
                         <select name="difficulty" class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100" required>
-                            <option value="umum" @selected(old('difficulty', $quiz->difficulty) === 'umum')>Umum</option>
-                            <option value="calon_paskibra" @selected(old('difficulty', $quiz->difficulty) === 'calon_paskibra')>Calon Paskibra</option>
-                            <option value="wiramuda" @selected(old('difficulty', $quiz->difficulty) === 'wiramuda')>Wiramuda</option>
-                            <option value="wiratama" @selected(old('difficulty', $quiz->difficulty) === 'wiratama')>Wiratama</option>
-                            <option value="instruktur_muda" @selected(old('difficulty', $quiz->difficulty) === 'instruktur_muda')>Instruktur Muda</option>
-                            <option value="instruktur" @selected(old('difficulty', $quiz->difficulty) === 'instruktur')>Instruktur</option>
+                            @php $difficulties = ['umum' => 'Umum', 'calon_paskibra' => 'Calon Paskibra', 'wiramuda' => 'Wiramuda', 'wiratama' => 'Wiratama', 'instruktur_muda' => 'Instruktur Muda', 'instruktur' => 'Instruktur']; @endphp
+                            @foreach($difficulties as $value => $label)
+                                <option value="{{ $value }}" @selected(old('difficulty', $quiz->difficulty) === $value)>{{ $label }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>

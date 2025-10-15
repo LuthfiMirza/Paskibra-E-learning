@@ -48,9 +48,12 @@ class QuizController extends Controller
 
         $categories = Quiz::query()->select('category')->distinct()->pluck('category')->filter()->values();
         $difficulties = [
-            'basic' => 'Dasar',
-            'intermediate' => 'Menengah',
-            'advanced' => 'Lanjutan',
+            'umum' => 'Umum',
+            'calon_paskibra' => 'Calon Paskibra',
+            'wiramuda' => 'Wiramuda',
+            'wiratama' => 'Wiratama',
+            'instruktur_muda' => 'Instruktur Muda',
+            'instruktur' => 'Instruktur',
         ];
         $courses = Course::query()->orderBy('title')->get(['id', 'title']);
 
@@ -120,7 +123,7 @@ class QuizController extends Controller
             'description' => 'nullable|string',
             'course_id' => 'nullable|exists:courses,id',
             'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
-            'difficulty' => 'required|in:basic,intermediate,advanced',
+            'difficulty' => 'required|in:umum,calon_paskibra,wiramuda,wiratama,instruktur_muda,instruktur',
             'time_limit' => 'nullable|integer|min:1',
             'passing_score' => 'nullable|integer|min:1|max:100',
             'max_attempts' => 'nullable|integer|min:1|max:10',

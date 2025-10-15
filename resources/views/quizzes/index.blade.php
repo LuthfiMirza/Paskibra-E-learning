@@ -14,9 +14,12 @@
     ];
 
     $difficultyLabels = [
-        'basic' => 'Dasar',
-        'intermediate' => 'Menengah',
-        'advanced' => 'Lanjutan',
+        'umum' => 'Umum',
+        'calon_paskibra' => 'Calon Paskibra',
+        'wiramuda' => 'Wiramuda',
+        'wiratama' => 'Wiratama',
+        'instruktur_muda' => 'Instruktur Muda',
+        'instruktur' => 'Instruktur',
     ];
 @endphp
 

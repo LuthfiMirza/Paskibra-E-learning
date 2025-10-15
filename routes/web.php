@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
     Route::get('/courses/{course}/lesson/{module}', [CourseController::class, 'lesson'])->name('courses.lesson');
+    Route::get('/lessons/{lesson}/file', [CourseController::class, 'file'])->name('lessons.file');
+    Route::get('/lesson-media/{path}', [CourseController::class, 'media'])->where('path', '.*')->name('lessons.media');
     
     // Grade routes
     Route::get('/grades', [GradeController::class, 'index'])->name('grades.index');

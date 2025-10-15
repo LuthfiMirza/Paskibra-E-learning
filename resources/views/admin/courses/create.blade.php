@@ -26,13 +26,13 @@
                     <!-- Title -->
                     <div class="mb-6">
                         <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Judul Kursus</label>
-                        <input type="text" name="title" id="title" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                        <input type="text" name="title" id="title" value="{{ old('title') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
                     </div>
 
                     <!-- Description -->
                     <div class="mb-6">
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                        <textarea name="description" id="description" rows="8" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                        <textarea name="description" id="description" rows="8" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">{{ old('description') }}</textarea>
                     </div>
                 </div>
 
@@ -42,11 +42,11 @@
                     <div class="mb-6">
                         <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
                         <select name="category" id="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                            <option value="kepaskibraan">Dasar Kepaskibraan</option>
-                            <option value="baris_berbaris">Baris Berbaris</option>
-                            <option value="wawasan">Pengetahuan Umum</option>
-                            <option value="kepemimpinan">Kepemimpinan</option>
-                            <option value="protokoler">Protokoler</option>
+                            <option value="kepaskibraan" @selected(old('category') === 'kepaskibraan')>Dasar Kepaskibraan</option>
+                            <option value="baris_berbaris" @selected(old('category') === 'baris_berbaris')>Baris Berbaris</option>
+                            <option value="wawasan" @selected(old('category') === 'wawasan')>Pengetahuan Umum</option>
+                            <option value="kepemimpinan" @selected(old('category') === 'kepemimpinan')>Kepemimpinan</option>
+                            <option value="protokoler" @selected(old('category') === 'protokoler')>Protokoler</option>
                         </select>
                     </div>
 
@@ -54,12 +54,12 @@
                     <div class="mb-6">
                         <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-2">Tingkat Kesulitan</label>
                         <select name="difficulty" id="difficulty" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                            <option value="umum">Umum</option>
-                            <option value="calon_paskibra">Calon Paskibra</option>
-                            <option value="wiramuda">Wiramuda</option>
-                            <option value="wiratama">Wiratama</option>
-                            <option value="instruktur_muda">Instruktur Muda</option>
-                            <option value="instruktur">Instruktur</option>
+                            <option value="umum" @selected(old('difficulty', 'umum') === 'umum')>Umum</option>
+                            <option value="calon_paskibra" @selected(old('difficulty') === 'calon_paskibra')>Calon Paskibra</option>
+                            <option value="wiramuda" @selected(old('difficulty') === 'wiramuda')>Wiramuda</option>
+                            <option value="wiratama" @selected(old('difficulty') === 'wiratama')>Wiratama</option>
+                            <option value="instruktur_muda" @selected(old('difficulty') === 'instruktur_muda')>Instruktur Muda</option>
+                            <option value="instruktur" @selected(old('difficulty') === 'instruktur')>Instruktur</option>
                         </select>
                     </div>
 
@@ -68,11 +68,11 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
                         <div class="flex items-center space-x-4">
                             <label class="flex items-center">
-                                <input type="radio" name="is_active" value="1" class="text-blue-500 focus:ring-blue-500" checked>
+                                <input type="radio" name="is_active" value="1" class="text-blue-500 focus:ring-blue-500" @checked(old('is_active', '1') === '1')>
                                 <span class="ml-2 text-sm text-gray-700">Aktif</span>
                             </label>
                             <label class="flex items-center">
-                                <input type="radio" name="is_active" value="0" class="text-blue-500 focus:ring-blue-500">
+                                <input type="radio" name="is_active" value="0" class="text-blue-500 focus:ring-blue-500" @checked(old('is_active') === '0')>
                                 <span class="ml-2 text-sm text-gray-700">Non-Aktif / Draft</span>
                             </label>
                         </div>

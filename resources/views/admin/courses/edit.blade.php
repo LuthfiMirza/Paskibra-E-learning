@@ -43,7 +43,7 @@
                         <select name="difficulty" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
                             @php $diff=['umum'=>'Umum','calon_paskibra'=>'Calon Paskibra','wiramuda'=>'Wiramuda','wiratama'=>'Wiratama','instruktur_muda'=>'Instruktur Muda','instruktur'=>'Instruktur']; @endphp
                             @foreach($diff as $k=>$v)
-                                <option value="{{ $k }}" {{ old('difficulty', $course->difficulty)==$k ? 'selected' : '' }}>{{ $v }}</option>
+                                <option value="{{ $k }}" {{ old('difficulty', $course->difficulty)===$k ? 'selected' : '' }}>{{ $v }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -75,4 +75,3 @@
     </div>
 </div>
 @endsection
-

@@ -44,9 +44,12 @@ class CourseController extends Controller
 
         $categories = Course::query()->select('category')->distinct()->pluck('category')->filter()->values();
         $difficulties = [
-            'basic' => 'Dasar',
-            'intermediate' => 'Menengah',
-            'advanced' => 'Lanjutan',
+            'umum' => 'Umum',
+            'calon_paskibra' => 'Calon Paskibra',
+            'wiramuda' => 'Wiramuda',
+            'wiratama' => 'Wiratama',
+            'instruktur_muda' => 'Instruktur Muda',
+            'instruktur' => 'Instruktur',
         ];
 
         return view('admin.courses', [
@@ -79,7 +82,7 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
-            'difficulty' => 'required|in:basic,intermediate,advanced',
+            'difficulty' => 'required|in:umum,calon_paskibra,wiramuda,wiratama,instruktur_muda,instruktur',
             'is_active' => 'required|boolean',
         ]);
 
@@ -88,7 +91,7 @@ class CourseController extends Controller
             'description' => $request->description,
             'category' => $request->category,
             'difficulty' => $request->difficulty,
-            'is_active' => $request->is_active,
+            'is_active' => $request->boolean('is_active'),
             'created_by' => auth()->id(),
         ]);
 
@@ -120,7 +123,7 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
-            'difficulty' => 'required|in:basic,intermediate,advanced',
+            'difficulty' => 'required|in:umum,calon_paskibra,wiramuda,wiratama,instruktur_muda,instruktur',
             'is_active' => 'required|boolean',
         ]);
 
@@ -129,7 +132,7 @@ class CourseController extends Controller
             'description' => $request->description,
             'category' => $request->category,
             'difficulty' => $request->difficulty,
-            'is_active' => $request->is_active,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return redirect()->route('admin.courses.index')->with('success', 'Kursus diperbarui.');

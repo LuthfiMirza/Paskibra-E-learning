@@ -66,7 +66,7 @@
                     <div>
                         <label class="block text-sm font-medium text-slate-600">Tingkat Kesulitan</label>
                         <select name="difficulty" class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100" required>
-                            <option value="umum" @selected(old('difficulty') === 'umum')>Umum</option>
+                            <option value="umum" @selected(old('difficulty', 'umum') === 'umum')>Umum</option>
                             <option value="calon_paskibra" @selected(old('difficulty') === 'calon_paskibra')>Calon Paskibra</option>
                             <option value="wiramuda" @selected(old('difficulty') === 'wiramuda')>Wiramuda</option>
                             <option value="wiratama" @selected(old('difficulty') === 'wiratama')>Wiratama</option>
