@@ -60,7 +60,7 @@
                         </select>
                     </div>
                     <div>
-                        <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1">Tingkat Kesulitan</label>
+                        <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1">Tingkatan</label>
                         <select
                             id="difficulty"
                             name="difficulty"
@@ -142,7 +142,7 @@
                                     </dd>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <dt class="text-gray-600">Tingkat kesulitan</dt>
+                                    <dt class="text-gray-600">Tingkatan</dt>
                                     <dd class="text-gray-900 font-semibold">
                                         {{ $activeFilters['difficulty'] && $activeFilters['difficulty'] !== 'all' ? ($difficulties[$activeFilters['difficulty']] ?? ucfirst($activeFilters['difficulty'])) : 'Semua' }}
                                     </dd>

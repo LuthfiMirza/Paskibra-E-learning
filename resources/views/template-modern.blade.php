@@ -124,7 +124,7 @@
                     </button>
                     
                     <!-- Notifications Dropdown -->
-                    <div id="notifications-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div id="notifications-dropdown" class="hidden fixed inset-x-4 top-[4.5rem] z-50 mx-auto max-w-sm bg-white rounded-lg shadow-lg border border-gray-200 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-3 sm:w-80 sm:mx-0">
                         <div class="p-4 border-b border-gray-200">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-lg font-semibold text-gray-900">Notifikasi</h3>

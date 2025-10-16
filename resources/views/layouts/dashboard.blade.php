@@ -87,7 +87,7 @@
                             </div>
                         </button>
 
-                        <div id="notifications-dropdown-menu" class="dropdown-menu hidden absolute right-0 mt-2 w-80 rounded-2xl border border-[var(--gray-200)] bg-white shadow-xl">
+                        <div id="notifications-dropdown-menu" class="dropdown-menu hidden absolute left-1/2 right-auto mt-2 w-[calc(100vw-2rem)] max-w-sm -translate-x-1/2 rounded-2xl border border-[var(--gray-200)] bg-white shadow-xl sm:left-auto sm:right-0 sm:w-80 sm:translate-x-0">
                             <div class="flex items-center justify-between border-b border-[var(--gray-200)] px-4 py-3">
                                 <h3 class="text-base font-semibold text-[var(--gray-900)]">Notifikasi</h3>
                                 <button class="text-sm font-medium text-[var(--paskibra-navy)] hover:text-[var(--paskibra-navy-light)]">Tandai Semua Dibaca</button>
