@@ -34,9 +34,8 @@ Route::get('/dashboard-redesign', [DashboardController::class, 'redesign'])
     ->middleware(['auth'])
     ->name('dashboard.redesign');
 
-Route::get('/dashboard-modern', function () {
-    return view('dashboard-modern');
-})->middleware(['auth'])->name('dashboard.modern');
+Route::get('/dashboard-modern', [DashboardController::class, 'modern'])
+    ->middleware(['auth'])->name('dashboard.modern');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

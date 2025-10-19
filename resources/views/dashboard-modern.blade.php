@@ -257,7 +257,7 @@
                         <h3 class="font-semibold text-gray-900 mb-2 text-center group-hover:text-blue-900 transition-colors">Mulai Belajar</h3>
                         <p class="text-sm text-gray-600 text-center mb-4">Akses materi pembelajaran terbaru</p>
                         <div class="flex items-center justify-center text-xs text-blue-900 font-medium">
-                            <span>24 Materi Tersedia</span>
+                            <span>{{ number_format($stats['available_lessons'] ?? 0) }} Materi Tersedia</span>
                             <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
@@ -274,7 +274,7 @@
                         <h3 class="font-semibold text-gray-900 mb-2 text-center group-hover:text-green-600 transition-colors">Kerjakan Quiz</h3>
                         <p class="text-sm text-gray-600 text-center mb-4">Uji pemahaman dengan quiz interaktif</p>
                         <div class="flex items-center justify-center text-xs text-green-600 font-medium">
-                            <span>5 Quiz Menunggu</span>
+                            <span>{{ number_format($stats['available_quizzes'] ?? 0) }} Quiz Menunggu</span>
                             <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
@@ -291,7 +291,7 @@
                         <h3 class="font-semibold text-gray-900 mb-2 text-center group-hover:text-yellow-600 transition-colors">Lihat Nilai</h3>
                         <p class="text-sm text-gray-600 text-center mb-4">Pantau progress dan pencapaian</p>
                         <div class="flex items-center justify-center text-xs text-yellow-600 font-medium">
-                            <span>Rata-rata: 85.2</span>
+                            <span>Rata-rata: {{ number_format($stats['average_score'] ?? 0, 1) }}</span>
                             <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
@@ -341,7 +341,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="text-3xl font-bold text-gray-900 mb-2">24</div>
+                        <div class="text-3xl font-bold text-gray-900 mb-2">{{ number_format($stats['available_lessons'] ?? 0) }}</div>
                         <div class="flex items-center text-sm text-green-600">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
@@ -363,7 +363,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="text-3xl font-bold text-gray-900 mb-2">18</div>
+                        <div class="text-3xl font-bold text-gray-900 mb-2">{{ number_format($stats['completed_quizzes'] ?? 0) }}</div>
                         <div class="flex items-center text-sm text-green-600">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
@@ -385,7 +385,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="text-3xl font-bold text-gray-900 mb-2">85.2</div>
+                        <div class="text-3xl font-bold text-gray-900 mb-2">{{ number_format($stats['average_score'] ?? 0, 1) }}</div>
                         <div class="flex items-center text-sm text-green-600">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>

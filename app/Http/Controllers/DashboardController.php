@@ -27,6 +27,13 @@ class DashboardController extends Controller
         return view('dashboard-redesign', compact('stats'));
     }
 
+    public function modern()
+    {
+        $user = Auth::user();
+        $stats = $this->getStats($user);
+        return view('dashboard-modern', compact('stats'));
+    }
+
     private function getStats($user)
     {
         // Get real-time statistics from database
