@@ -88,7 +88,7 @@
             <h3 class="font-semibold text-gray-900 mb-2 text-center group-hover:text-yellow-600 transition-colors">Lihat Nilai</h3>
             <p class="text-sm text-gray-600 text-center mb-4">Pantau progress dan pencapaian</p>
             <div class="flex items-center justify-center text-xs text-yellow-600 font-medium">
-                <span>Rata-rata: 85.2</span>
+                <span>Rata-rata: {{ number_format($stats['average_score'] ?? 0, 1) }}</span>
                 <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
@@ -122,7 +122,7 @@
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-gray-900 mb-2">{{ $stats['total_courses'] ?? 0 }}</div>
+            <div class="text-3xl font-bold text-gray-900 mb-2">{{ number_format($stats['available_lessons'] ?? 0) }}</div>
             <div class="flex items-center text-sm text-blue-600">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
