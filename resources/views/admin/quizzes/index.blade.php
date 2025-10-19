@@ -9,7 +9,7 @@
         <div>
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Manajemen Kuis</p>
             <h1 class="mt-2 text-2xl font-semibold text-slate-900">Daftar Kuis</h1>
-            <p class="text-sm text-slate-500">Kelola jadwal publikasi, tingkat kesulitan, dan pertanyaan kuis.</p>
+            <p class="text-sm text-slate-500">Kelola jadwal publikasi, tingkatan dan pertanyaan kuis.</p>
         </div>
         <a href="{{ route('admin.quizzes.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-700">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m7-7H5"/></svg>

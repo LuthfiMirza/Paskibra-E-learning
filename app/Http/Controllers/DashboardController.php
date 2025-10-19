@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Quiz;
+use App\Models\Lesson;
 use App\Models\Announcement;
 use App\Models\QuizAttempt;
 use App\Models\Achievement;
@@ -15,18 +16,40 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+        $stats = $this->getStats($user);
+        return view('dashboard', compact('stats'));
+    }
+
+    public function redesign()
+    {
+        $user = Auth::user();
+        $stats = $this->getStats($user);
+        return view('dashboard-redesign', compact('stats'));
+    }
+
+    private function getStats($user)
+    {
         // Get real-time statistics from database
-        $stats = [
+        return [
             'total_courses' => Course::where('is_active', true)->count(),
             'total_quizzes' => Quiz::where('is_active', true)->count(),
+            // Quick actions dynamic data
+            'available_lessons' => Lesson::active()
+                ->whereHas('course', function ($q) {
+                    $q->where('is_active', true);
+                })
+                ->count(),
+            'available_quizzes' => Quiz::where('is_active', true)
+                ->where(function ($builder) {
+                    $builder->whereNull('published_at')
+                        ->orWhere('published_at', '<=', now());
+                })
+                ->count(),
             'completed_quizzes' => QuizAttempt::where('user_id', $user->id)->completed()->count(),
             'average_score' => QuizAttempt::where('user_id', $user->id)
                 ->completed()
                 ->avg('score') ?? 0,
         ];
-        
-        return view('dashboard', compact('stats'));
     }
 
     private function adminDashboard()

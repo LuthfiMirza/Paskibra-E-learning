@@ -65,7 +65,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-600">Tingkat Kesulitan</label>
+                        <label class="block text-sm font-medium text-slate-600">Tingkatan</label>
                         <select name="difficulty" class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100" required>
                             @php $difficulties = ['umum' => 'Umum', 'calon_paskibra' => 'Calon Paskibra', 'wiramuda' => 'Wiramuda', 'wiratama' => 'Wiratama', 'instruktur_muda' => 'Instruktur Muda', 'instruktur' => 'Instruktur']; @endphp
                             @foreach($difficulties as $value => $label)

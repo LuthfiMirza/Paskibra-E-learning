@@ -29,10 +29,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
-// Dashboard Redesign Routes
-Route::get('/dashboard-redesign', function () {
-    return view('dashboard-redesign');
-})->name('dashboard.redesign');
+// Dashboard Redesign Routes (uses real DB data)
+Route::get('/dashboard-redesign', [DashboardController::class, 'redesign'])
+    ->middleware(['auth'])
+    ->name('dashboard.redesign');
 
 Route::get('/dashboard-modern', function () {
     return view('dashboard-modern');
