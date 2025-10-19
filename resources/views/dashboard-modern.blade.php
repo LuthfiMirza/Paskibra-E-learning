@@ -103,7 +103,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM11 19H6a2 2 0 01-2-2V7a2 2 0 012-2h5m5 0v5"></path>
                         </svg>
                         <span>Pengumuman</span>
-                        <span class="ml-auto bg-red-600 text-white text-xs px-2 py-1 rounded-full">3</span>
+                        @php($announcementBadgeCount = $headerAnnouncementCount ?? 0)
+                        @if($announcementBadgeCount > 0)
+                            <span class="ml-auto bg-red-600 text-white text-xs px-2 py-1 rounded-full">{{ $announcementBadgeCount }}</span>
+                        @endif
                     </a>
                 </div>
 
@@ -137,13 +140,6 @@
                 <div class="mb-6">
                     <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Aktivitas</h3>
                     
-                    <a href="{{ route('rankings.index') }}" class="flex items-center px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                        </svg>
-                        <span>Ranking Kelas</span>
-                    </a>
-                    
                     <a href="{{ route('achievements.index') }}" class="flex items-center px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
@@ -158,7 +154,7 @@
                 <div class="mb-6">
                     <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Management</h3>
                     
-                    <a href="{{ route('admin.courses') }}" class="flex items-center px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                    <a href="{{ route('admin.courses.index') }}" class="flex items-center px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                         </svg>
@@ -190,22 +186,13 @@
             <!-- Profile Section -->
             <div class="p-4 border-t border-gray-700">
                 <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-4">
-                    <div class="flex items-center space-x-3 mb-3">
+                    <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                             <span class="text-white font-semibold">{{ substr(auth()->user()->name ?? 'SA', 0, 2) }}</span>
                         </div>
                         <div>
                             <p class="text-white font-medium text-sm">{{ auth()->user()->name ?? 'Super Admin' }}</p>
-                            <p class="text-blue-200 text-xs">Level 65%</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-xs text-blue-200">
-                            <span>XP Progress</span>
-                            <span>650/1000</span>
-                        </div>
-                        <div class="w-full bg-white/20 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: 65%"></div>
+                            <p class="text-blue-200 text-xs capitalize">{{ auth()->user()->role ?? 'pengguna' }}</p>
                         </div>
                     </div>
                 </div>

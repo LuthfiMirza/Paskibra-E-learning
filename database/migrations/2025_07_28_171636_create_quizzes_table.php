@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->foreignId('course_id')->nullable()->constrained()->onDelete('cascade');
             $table->enum('category', ['kepaskibraan', 'baris_berbaris', 'wawasan', 'kepemimpinan', 'protokoler']);
-            $table->enum('difficulty', ['basic', 'intermediate', 'advanced'])->default('basic');
+            $table->enum('difficulty', ['umum', 'calon_paskibra', 'wiramuda', 'wiratama', 'instruktur_muda', 'instruktur'])->default('umum');
             $table->integer('time_limit')->nullable(); // in minutes
             $table->integer('passing_score')->default(70);
             $table->integer('max_attempts')->default(3);

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->enum('category', ['kepaskibraan', 'baris_berbaris', 'wawasan', 'kepemimpinan', 'protokoler']);
-            $table->enum('difficulty', ['basic', 'intermediate', 'advanced'])->default('basic');
+            $table->enum('difficulty', ['umum', 'calon_paskibra', 'wiramuda', 'wiratama', 'instruktur_muda', 'instruktur'])->default('umum');
             $table->string('thumbnail')->nullable();
             $table->boolean('is_active')->default(true);
             $table->integer('duration_minutes')->nullable();

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -16,7 +15,8 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create permissions
+        $guard = 'web';
+
         $permissions = [
             // User management
             'manage_users',
@@ -24,14 +24,14 @@ class RolePermissionSeeder extends Seeder
             'create_users',
             'edit_users',
             'delete_users',
-            
+
             // Course management
             'manage_courses',
             'view_courses',
             'create_courses',
             'edit_courses',
             'delete_courses',
-            
+
             // Quiz management
             'manage_quizzes',
             'view_quizzes',
@@ -39,99 +39,114 @@ class RolePermissionSeeder extends Seeder
             'edit_quizzes',
             'delete_quizzes',
             'take_quizzes',
-            
+
             // Announcement management
             'manage_announcements',
             'view_announcements',
             'create_announcements',
             'edit_announcements',
             'delete_announcements',
-            
+
             // Achievement management
             'manage_achievements',
             'view_achievements',
             'create_achievements',
             'edit_achievements',
             'delete_achievements',
-            
+
             // Reports and analytics
             'view_reports',
             'export_data',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(
+                ['name' => $permission, 'guard_name' => $guard]
+            );
         }
 
-        // Create roles
-        $superAdmin = Role::create(['name' => 'super_admin']);
-        $admin = Role::create(['name' => 'admin']);
-        $instructor = Role::create(['name' => 'instructor']);
-        $member = Role::create(['name' => 'member']);
+        $superAdminRole = Role::firstOrCreate([
+            'name' => 'super_admin',
+            'guard_name' => $guard,
+        ]);
 
-        // Assign permissions to roles
-        $superAdmin->givePermissionTo(Permission::all());
-        
-        $admin->givePermissionTo([
+        $adminRole = Role::firstOrCreate([
+            'name' => 'admin',
+            'guard_name' => $guard,
+        ]);
+
+        $instructorRole = Role::firstOrCreate([
+            'name' => 'instructor',
+            'guard_name' => $guard,
+        ]);
+
+        $memberRole = Role::firstOrCreate([
+            'name' => 'member',
+            'guard_name' => $guard,
+        ]);
+
+        $superAdminRole->syncPermissions(Permission::all());
+
+        $adminRole->syncPermissions([
             'manage_users', 'view_users', 'create_users', 'edit_users',
             'manage_courses', 'view_courses', 'create_courses', 'edit_courses',
             'manage_quizzes', 'view_quizzes', 'create_quizzes', 'edit_quizzes',
             'manage_announcements', 'view_announcements', 'create_announcements', 'edit_announcements',
-            'view_reports', 'export_data'
+            'view_reports', 'export_data',
         ]);
-        
-        $instructor->givePermissionTo([
+
+        $instructorRole->syncPermissions([
             'view_users',
             'view_courses', 'create_courses', 'edit_courses',
             'view_quizzes', 'create_quizzes', 'edit_quizzes',
             'view_announcements', 'create_announcements',
-            'view_reports'
+            'view_reports',
         ]);
-        
-        $member->givePermissionTo([
+
+        $memberRole->syncPermissions([
             'view_courses',
             'view_quizzes', 'take_quizzes',
             'view_announcements',
-            'view_achievements'
+            'view_achievements',
         ]);
 
-        // Create default super admin user
-        $superAdminUser = User::create([
-            'name' => 'Super Admin PASKIBRA',
-            'email' => 'admin@paskibra.com',
-            'password' => Hash::make('admin123'),
-            'nis' => 'ADM001',
-            'angkatan' => 2024,
-            'status' => 'active',
-            'email_verified_at' => now(),
-        ]);
-        
-        $superAdminUser->assignRole('super_admin');
+        $superAdminUser = User::updateOrCreate(
+            ['email' => 'admin@paskibra.com'],
+            [
+                'name' => 'Super Admin PASKIBRA',
+                'password' => Hash::make('admin123'),
+                'nis' => 'ADM001',
+                'angkatan' => 2024,
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
+        $superAdminUser->syncRoles([$superAdminRole]);
 
-        // Create sample instructor
-        $instructor = User::create([
-            'name' => 'Pelatih PASKIBRA',
-            'email' => 'pelatih@paskibra.com',
-            'password' => Hash::make('pelatih123'),
-            'nis' => 'PLT001',
-            'angkatan' => 2020,
-            'status' => 'active',
-            'email_verified_at' => now(),
-        ]);
-        
-        $instructor->assignRole('instructor');
+        $instructorUser = User::updateOrCreate(
+            ['email' => 'pelatih@paskibra.com'],
+            [
+                'name' => 'Pelatih PASKIBRA',
+                'password' => Hash::make('pelatih123'),
+                'nis' => 'PLT001',
+                'angkatan' => 2020,
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
+        $instructorUser->syncRoles([$instructorRole]);
 
-        // Create sample member
-        $memberUser = User::create([
-            'name' => 'Anggota PASKIBRA',
-            'email' => 'anggota@paskibra.com',
-            'password' => Hash::make('anggota123'),
-            'nis' => 'AGT001',
-            'angkatan' => 2024,
-            'status' => 'active',
-            'email_verified_at' => now(),
-        ]);
-        
-        $memberUser->assignRole('member');
+        $memberUser = User::updateOrCreate(
+            ['email' => 'anggota@paskibra.com'],
+            [
+                'name' => 'Anggota PASKIBRA',
+                'password' => Hash::make('anggota123'),
+                'nis' => 'AGT001',
+                'angkatan' => 2024,
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
+        $memberUser->syncRoles([$memberRole]);
     }
 }

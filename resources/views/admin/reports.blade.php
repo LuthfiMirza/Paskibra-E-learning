@@ -1,311 +1,246 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Laporan & Analitik')
-@section('subtitle', 'Analisis data dan laporan sistem e-learning')
+@section('subtitle', 'Analisis menyeluruh terhadap aktivitas pengguna dan performa sistem')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between">
+<div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="rounded-3xl border border-slate-200 bg-white px-6 py-6 shadow-[0_25px_50px_-35px_rgba(15,23,42,0.35)] flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Panel Laporan</p>
+            <h1 class="mt-2 text-2xl font-semibold text-slate-900">Laporan & Analitik</h1>
+            <p class="text-sm text-slate-500">Gunakan laporan ini untuk melacak keterlibatan, performa kursus, dan kesehatan sistem.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <button class="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-700">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m7-7H5"/></svg>
+                Export Laporan
+            </button>
+            <button class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600 hover:border-indigo-200 hover:text-indigo-600">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m-9 4h10m-9 4h5"/></svg>
+                Pilih Periode
+            </button>
+        </div>
+    </div>
+
+    <!-- Category quick links -->
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        @php
+            $sections = [
+                ['title' => 'Aktivitas Pengguna', 'subtitle' => 'Engagement & interaksi', 'gradient' => 'from-sky-500 to-indigo-500', 'icon' => 'users'],
+                ['title' => 'Performa Kursus', 'subtitle' => 'Penyelesaian & kualitas materi', 'gradient' => 'from-emerald-500 to-teal-500', 'icon' => 'book'],
+                ['title' => 'Kesehatan Sistem', 'subtitle' => 'Status infrastruktur', 'gradient' => 'from-purple-500 to-fuchsia-500', 'icon' => 'pulse'],
+            ];
+        @endphp
+        @foreach($sections as $section)
+            <div class="rounded-3xl bg-gradient-to-r {{ $section['gradient'] }} p-6 text-white shadow-lg shadow-slate-900/20">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-medium text-white/80">{{ $section['subtitle'] }}</p>
+                        <h3 class="mt-2 text-lg font-semibold">{{ $section['title'] }}</h3>
+                    </div>
+                    <span class="rounded-2xl bg-white/20 p-3">
+                        @switch($section['icon'])
+                            @case('users')
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11a4 4 0 118 0 4 4 0 01-8 0z"/></svg>
+                                @break
+                            @case('book')
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 016.5 17H20" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5V4.5z"/></svg>
+                                @break
+                            @case('pulse')
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+                                @break
+                        @endswitch
+                    </span>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <!-- User activity -->
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_25px_45px_-35px_rgba(15,23,42,0.3)]">
+        <div class="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Laporan & Analitik</h1>
-                <p class="text-gray-600">Analisis mendalam tentang performa sistem dan pengguna</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Aktivitas Pengguna</p>
+                <h2 class="text-xl font-semibold text-slate-900">Pertumbuhan & engagement</h2>
             </div>
-            <div class="flex space-x-3">
-                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-                    <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                    Export Laporan
-                </button>
-                <button class="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200">
-                    <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
-                    </svg>
-                    Pilih Periode
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Report Categories -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="admin-card bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6">
-            <div class="flex items-center">
-                <div class="flex-1">
-                    <h3 class="text-lg font-semibold mb-2">Aktivitas Pengguna</h3>
-                    <p class="text-blue-100 text-sm">Analisis engagement dan aktivitas</p>
-                </div>
-                <div class="text-blue-200">
-                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
-                    </svg>
-                </div>
+            <div class="flex items-center gap-3 text-xs font-medium text-emerald-600">
+                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                    {{ $reports['user_activity']['retention_rate'] ?? '0%' }} retention
+                </span>
             </div>
         </div>
 
-        <div class="admin-card bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg p-6">
-            <div class="flex items-center">
-                <div class="flex-1">
-                    <h3 class="text-lg font-semibold mb-2">Performa Kursus</h3>
-                    <p class="text-green-100 text-sm">Statistik pembelajaran dan penyelesaian</p>
-                </div>
-                <div class="text-green-200">
-                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
+        <div class="grid gap-6 md:grid-cols-4">
+            <div class="rounded-2xl bg-sky-50 p-5 text-center">
+                <div class="text-2xl font-semibold text-sky-600">{{ $reports['user_activity']['daily_active_users'] ?? 0 }}</div>
+                <p class="text-xs text-slate-500">Aktif harian</p>
+            </div>
+            <div class="rounded-2xl bg-indigo-50 p-5 text-center">
+                <div class="text-2xl font-semibold text-indigo-600">{{ $reports['user_activity']['weekly_active_users'] ?? 0 }}</div>
+                <p class="text-xs text-slate-500">Aktif mingguan</p>
+            </div>
+            <div class="rounded-2xl bg-purple-50 p-5 text-center">
+                <div class="text-2xl font-semibold text-purple-600">{{ $reports['user_activity']['monthly_active_users'] ?? 0 }}</div>
+                <p class="text-xs text-slate-500">Aktif bulanan</p>
+            </div>
+            <div class="rounded-2xl bg-emerald-50 p-5 text-center">
+                <div class="text-2xl font-semibold text-emerald-600">{{ $reports['user_activity']['completion_rate'] ?? 0 }}%</div>
+                <p class="text-xs text-slate-500">Rasio penyelesaian</p>
             </div>
         </div>
 
-        <div class="admin-card bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-6">
-            <div class="flex items-center">
-                <div class="flex-1">
-                    <h3 class="text-lg font-semibold mb-2">Sistem & Performa</h3>
-                    <p class="text-purple-100 text-sm">Monitoring server dan resource</p>
-                </div>
-                <div class="text-purple-200">
-                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- User Activity Report -->
-    <div class="admin-card bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">📊 Laporan Aktivitas Pengguna</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-                <div class="text-2xl font-bold text-blue-600">{{ $reports['user_activity']['daily_active_users'] }}</div>
-                <div class="text-sm text-gray-600">Aktif Harian</div>
-            </div>
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-                <div class="text-2xl font-bold text-green-600">{{ $reports['user_activity']['weekly_active_users'] }}</div>
-                <div class="text-sm text-gray-600">Aktif Mingguan</div>
-            </div>
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-                <div class="text-2xl font-bold text-purple-600">{{ $reports['user_activity']['monthly_active_users'] }}</div>
-                <div class="text-sm text-gray-600">Aktif Bulanan</div>
-            </div>
-            <div class="text-center p-4 bg-orange-50 rounded-lg">
-                <div class="text-2xl font-bold text-orange-600">{{ $reports['user_activity']['user_retention_rate'] }}%</div>
-                <div class="text-sm text-gray-600">Retention Rate</div>
-            </div>
-        </div>
-
-        <!-- Chart Placeholder -->
-        <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-            <div class="text-center">
-                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
-                <p class="text-gray-500">Chart Aktivitas Pengguna</p>
-                <p class="text-sm text-gray-400 mt-2">Data akan ditampilkan di sini</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Course Performance Report -->
-    <div class="admin-card bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">📚 Laporan Performa Kursus</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-                <div class="text-2xl font-bold text-blue-600">{{ $reports['course_performance']['total_enrollments'] }}</div>
-                <div class="text-sm text-gray-600">Total Pendaftaran</div>
-            </div>
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-                <div class="text-2xl font-bold text-green-600">{{ $reports['course_performance']['completion_rate'] }}%</div>
-                <div class="text-sm text-gray-600">Tingkat Penyelesaian</div>
-            </div>
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-                <div class="text-2xl font-bold text-purple-600">{{ $reports['course_performance']['average_score'] }}%</div>
-                <div class="text-sm text-gray-600">Rata-rata Nilai</div>
-            </div>
-            <div class="text-center p-4 bg-red-50 rounded-lg">
-                <div class="text-2xl font-bold text-red-600">{{ $reports['course_performance']['dropout_rate'] }}%</div>
-                <div class="text-sm text-gray-600">Dropout Rate</div>
-            </div>
-        </div>
-
-        <!-- Chart Placeholder -->
-        <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-            <div class="text-center">
-                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                </svg>
-                <p class="text-gray-500">Chart Performa Kursus</p>
-                <p class="text-sm text-gray-400 mt-2">Trend penyelesaian dan nilai</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- System Usage Report -->
-    <div class="admin-card bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">⚙️ Laporan Penggunaan Sistem</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-                <div class="text-2xl font-bold text-blue-600">{{ $reports['system_usage']['storage_used'] }}GB</div>
-                <div class="text-sm text-gray-600">Storage Terpakai</div>
-            </div>
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-                <div class="text-2xl font-bold text-green-600">{{ $reports['system_usage']['bandwidth_used'] }}GB</div>
-                <div class="text-sm text-gray-600">Bandwidth Bulan Ini</div>
-            </div>
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-                <div class="text-2xl font-bold text-purple-600">{{ number_format($reports['system_usage']['api_calls_today']) }}</div>
-                <div class="text-sm text-gray-600">API Calls Hari Ini</div>
-            </div>
-            <div class="text-center p-4 bg-orange-50 rounded-lg">
-                <div class="text-2xl font-bold text-orange-600">{{ $reports['system_usage']['error_rate'] }}%</div>
-                <div class="text-sm text-gray-600">Error Rate</div>
-            </div>
-        </div>
-
-        <!-- System Health Indicators -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="p-4 bg-gray-50 rounded-lg">
-                <h3 class="text-sm font-medium text-gray-700 mb-3">Storage Usage</h3>
-                <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
-                    <div class="bg-blue-500 h-3 rounded-full" style="width: {{ ($reports['system_usage']['storage_used'] / 10) * 100 }}%"></div>
-                </div>
-                <div class="text-xs text-gray-600">{{ $reports['system_usage']['storage_used'] }}GB / 10GB</div>
-            </div>
-
-            <div class="p-4 bg-gray-50 rounded-lg">
-                <h3 class="text-sm font-medium text-gray-700 mb-3">Server Load</h3>
-                <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
-                    <div class="bg-green-500 h-3 rounded-full" style="width: 35%"></div>
-                </div>
-                <div class="text-xs text-gray-600">35% CPU Usage</div>
-            </div>
-
-            <div class="p-4 bg-gray-50 rounded-lg">
-                <h3 class="text-sm font-medium text-gray-700 mb-3">Memory Usage</h3>
-                <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
-                    <div class="bg-yellow-500 h-3 rounded-full" style="width: 68%"></div>
-                </div>
-                <div class="text-xs text-gray-600">68% RAM Usage</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Detailed Reports Table -->
-    <div class="mt-8 admin-card bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-800">Laporan Detail</h2>
-        </div>
-        
-        <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Top Performing Courses -->
-                <div class="bg-green-50 rounded-lg p-4">
-                    <h3 class="text-lg font-semibold text-green-800 mb-4">🏆 Kursus Terpopuler</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-700">Dasar-dasar Paskibra</span>
-                            <span class="text-sm font-medium text-green-600">45 siswa</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-700">Teknik Baris Berbaris</span>
-                            <span class="text-sm font-medium text-green-600">32 siswa</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-700">Kepemimpinan Paskibra</span>
-                            <span class="text-sm font-medium text-green-600">28 siswa</span>
-                        </div>
+        <div class="mt-8">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-900">Distribusi Aktivitas</h3>
+                        <p class="text-xs text-slate-500">Perbandingan login, kuis, dan forum</p>
                     </div>
                 </div>
-
-                <!-- Top Students -->
-                <div class="bg-blue-50 rounded-lg p-4">
-                    <h3 class="text-lg font-semibold text-blue-800 mb-4">⭐ Siswa Terbaik</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-700">Ahmad Rizki Pratama</span>
-                            <span class="text-sm font-medium text-blue-600">92.5%</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-700">Siti Nurhaliza</span>
-                            <span class="text-sm font-medium text-blue-600">89.2%</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-700">Budi Santoso</span>
-                            <span class="text-sm font-medium text-blue-600">87.8%</span>
-                        </div>
+                <div class="mt-4 grid gap-4 text-sm text-slate-600 md:grid-cols-3">
+                    <div class="rounded-xl bg-white p-4 shadow-sm shadow-slate-900/5">
+                        <p class="text-xs uppercase tracking-wide text-slate-400">Login Harian</p>
+                        <p class="mt-2 text-lg font-semibold text-slate-900">{{ $reports['user_activity']['daily_logins'] ?? 0 }}</p>
                     </div>
-                </div>
-
-                <!-- Recent Issues -->
-                <div class="bg-red-50 rounded-lg p-4">
-                    <h3 class="text-lg font-semibold text-red-800 mb-4">⚠️ Issues Terbaru</h3>
-                    <div class="space-y-3">
-                        <div class="text-sm text-gray-700">
-                            <div class="font-medium">Slow Query Detected</div>
-                            <div class="text-xs text-gray-500">2 jam yang lalu</div>
-                        </div>
-                        <div class="text-sm text-gray-700">
-                            <div class="font-medium">High Memory Usage</div>
-                            <div class="text-xs text-gray-500">5 jam yang lalu</div>
-                        </div>
-                        <div class="text-sm text-gray-700">
-                            <div class="font-medium">Failed Login Attempts</div>
-                            <div class="text-xs text-gray-500">1 hari yang lalu</div>
-                        </div>
+                    <div class="rounded-xl bg-white p-4 shadow-sm shadow-slate-900/5">
+                        <p class="text-xs uppercase tracking-wide text-slate-400">Kuis Diselesaikan</p>
+                        <p class="mt-2 text-lg font-semibold text-slate-900">{{ $reports['user_activity']['quizzes_completed'] ?? 0 }}</p>
+                    </div>
+                    <div class="rounded-xl bg-white p-4 shadow-sm shadow-slate-900/5">
+                        <p class="text-xs uppercase tracking-wide text-slate-400">Forum Aktif</p>
+                        <p class="mt-2 text-lg font-semibold text-slate-900">{{ $reports['user_activity']['forum_posts'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Export Options -->
-    <div class="mt-8 admin-card bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">📄 Export Laporan</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                <div class="flex items-center mb-3">
-                    <svg class="w-8 h-8 text-red-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path>
-                    </svg>
-                    <h3 class="text-lg font-medium text-gray-900">PDF Report</h3>
+    <!-- Course performance -->
+    <div class="grid gap-6 lg:grid-cols-3">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_25px_45px_-35px_rgba(15,23,42,0.3)] lg:col-span-2">
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Performa Kursus</p>
+                    <h2 class="text-xl font-semibold text-slate-900">Penyelesaian materi per kategori</h2>
                 </div>
-                <p class="text-sm text-gray-600 mb-4">Laporan lengkap dalam format PDF</p>
-                <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors duration-200">
-                    Download PDF
-                </button>
+                <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600">{{ $reports['course_performance']['avg_completion'] ?? 0 }}% rata-rata</span>
             </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-6">
+                <p class="text-sm text-slate-500">Distribusi penyelesaian berdasarkan kategori kursus</p>
+                <div class="mt-4 space-y-4">
+                    @foreach(($reports['course_performance']['categories'] ?? []) as $category => $value)
+                        <div>
+                            <div class="flex items-center justify-between text-sm text-slate-600">
+                                <span>{{ $category }}</span>
+                                <span class="font-semibold text-slate-900">{{ $value }}%</span>
+                            </div>
+                            <div class="mt-2 h-2 rounded-full bg-slate-200">
+                                <div class="h-full rounded-full bg-indigo-500" style="width: {{ $value }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_25px_45px_-35px_rgba(15,23,42,0.3)] space-y-6">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Instruktur Terbaik</p>
+                <ul class="mt-4 space-y-3 text-sm text-slate-600">
+                    @foreach(($reports['course_performance']['top_instructors'] ?? []) as $instructor)
+                        <li class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-2">
+                            <span>{{ $instructor['name'] }}</span>
+                            <span class="font-semibold text-indigo-600">{{ $instructor['score'] }}%</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Kursus Populer</p>
+                <ul class="mt-4 space-y-3 text-sm text-slate-600">
+                    @foreach(($reports['course_performance']['popular_courses'] ?? []) as $course)
+                        <li class="rounded-2xl border border-slate-200 px-4 py-2">
+                            <div class="font-medium text-slate-900">{{ $course['title'] }}</div>
+                            <div class="text-xs text-slate-500">{{ $course['enrolled'] }} peserta • {{ $course['completion'] }}% selesai</div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </div>
 
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                <div class="flex items-center mb-3">
-                    <svg class="w-8 h-8 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                    <h3 class="text-lg font-medium text-gray-900">Excel Export</h3>
-                </div>
-                <p class="text-sm text-gray-600 mb-4">Data dalam format spreadsheet</p>
-                <button class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors duration-200">
-                    Download Excel
-                </button>
+    <!-- System health -->
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_25px_45px_-35px_rgba(15,23,42,0.3)]">
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Kesehatan Sistem</p>
+                <h2 class="text-xl font-semibold text-slate-900">Ringkasan operasi server</h2>
             </div>
+            <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">{{ $reports['system_health']['uptime'] ?? '100%' }} uptime</span>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+            <div class="rounded-2xl bg-slate-50 p-4">
+                <p class="text-xs uppercase tracking-wide text-slate-400">Response Time</p>
+                <p class="mt-2 text-lg font-semibold text-slate-900">{{ $reports['system_health']['response_time'] ?? '0ms' }}</p>
+                <p class="text-xs text-slate-500">Rata-rata 24 jam terakhir</p>
+            </div>
+            <div class="rounded-2xl bg-slate-50 p-4">
+                <p class="text-xs uppercase tracking-wide text-slate-400">Penggunaan CPU</p>
+                <p class="mt-2 text-lg font-semibold text-slate-900">{{ $reports['system_health']['cpu_usage'] ?? '0%' }}</p>
+                <p class="text-xs text-slate-500">Batas aman &lt; 80%</p>
+            </div>
+            <div class="rounded-2xl bg-slate-50 p-4">
+                <p class="text-xs uppercase tracking-wide text-slate-400">Penggunaan Memori</p>
+                <p class="mt-2 text-lg font-semibold text-slate-900">{{ $reports['system_health']['memory_usage'] ?? '0%' }}</p>
+                <p class="text-xs text-slate-500">Update realtime setiap 5 menit</p>
+            </div>
+        </div>
+        <div class="mt-6 grid gap-6 md:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-5">
+                <h3 class="text-sm font-semibold text-slate-900">Daftar event sistem</h3>
+                <ul class="mt-3 space-y-2 text-xs text-slate-500">
+                    @foreach(($reports['system_health']['events'] ?? []) as $event)
+                        <li class="rounded-lg bg-white px-3 py-2 flex items-center justify-between">
+                            <span>{{ $event['message'] }}</span>
+                            <span class="text-slate-400">{{ $event['time'] }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-5">
+                <h3 class="text-sm font-semibold text-slate-900">Isu yang perlu ditindak</h3>
+                <ul class="mt-3 space-y-2 text-xs text-slate-500">
+                    @foreach(($reports['system_health']['alerts'] ?? []) as $alert)
+                        <li class="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-rose-600">
+                            {{ $alert }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </div>
 
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                <div class="flex items-center mb-3">
-                    <svg class="w-8 h-8 text-blue-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                    <h3 class="text-lg font-medium text-gray-900">CSV Export</h3>
+    <!-- Export options -->
+    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_25px_45px_-35px_rgba(15,23,42,0.3)]">
+        <h2 class="text-lg font-semibold text-slate-900">Export cepat</h2>
+        <p class="text-sm text-slate-500">Pilih format laporan yang ingin diunduh.</p>
+        <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+            @php
+                $exports = [
+                    ['label' => 'PDF Ringkas', 'description' => 'Laporan siap presentasi', 'button' => 'Download PDF', 'color' => 'bg-rose-500 hover:bg-rose-600'],
+                    ['label' => 'Spreadsheet Excel', 'description' => 'Analisis data lanjutan', 'button' => 'Download Excel', 'color' => 'bg-emerald-500 hover:bg-emerald-600'],
+                    ['label' => 'CSV Mentah', 'description' => 'Integrasi BI & data warehouse', 'button' => 'Download CSV', 'color' => 'bg-indigo-500 hover:bg-indigo-600'],
+                ];
+            @endphp
+            @foreach($exports as $export)
+                <div class="rounded-2xl border border-slate-200 p-5 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/10 transition">
+                    <h3 class="text-base font-semibold text-slate-900">{{ $export['label'] }}</h3>
+                    <p class="mt-2 text-sm text-slate-500">{{ $export['description'] }}</p>
+                    <button class="mt-4 w-full rounded-2xl {{ $export['color'] }} px-4 py-2 text-sm font-medium text-white">{{ $export['button'] }}</button>
                 </div>
-                <p class="text-sm text-gray-600 mb-4">Data mentah untuk analisis lanjutan</p>
-                <button class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors duration-200">
-                    Download CSV
-                </button>
-            </div>
+            @endforeach
         </div>
     </div>
 </div>

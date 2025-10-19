@@ -33,6 +33,10 @@ class UserController extends Controller
             }
         }
 
+        if (($tingkatan = $request->query('tingkatan')) !== null && $tingkatan !== '') {
+            $query->where('angkatan', (int) $tingkatan);
+        }
+
         // Export CSV if requested
         if ($request->query('export') === 'csv') {
             $exportQuery = clone $query;
@@ -71,7 +75,14 @@ class UserController extends Controller
             'admins'      => User::where('role', 'admin')->count(),
         ];
 
-        return view('admin.users', compact('users', 'stats'));
+        $tingkatanOptions = User::whereNotNull('angkatan')
+            ->select('angkatan')
+            ->distinct()
+            ->orderBy('angkatan', 'desc')
+            ->pluck('angkatan')
+            ->toArray();
+
+        return view('admin.users', compact('users', 'stats', 'tingkatanOptions'));
     }
 
     public function create()

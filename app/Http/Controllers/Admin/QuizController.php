@@ -3,94 +3,145 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Quiz;
 use App\Models\Course;
+use App\Models\Quiz;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class QuizController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $quizzes = Quiz::with('course', 'creator')->latest()->paginate(10);
-        return view('admin.quizzes.index', compact('quizzes'));
+        $query = Quiz::with('course', 'creator');
+
+        $search = trim((string) $request->get('search', ''));
+        if ($search !== '') {
+            $query->where(function ($builder) use ($search) {
+                $builder->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $category = (string) $request->get('category', 'all');
+        if ($category !== '' && $category !== 'all') {
+            $query->where('category', $category);
+        }
+
+        $difficulty = (string) $request->get('difficulty', 'all');
+        if ($difficulty !== '' && $difficulty !== 'all') {
+            $query->where('difficulty', $difficulty);
+        }
+
+        $status = (string) $request->get('status', 'all');
+        if ($status === 'active') {
+            $query->where('is_active', true);
+        } elseif ($status === 'inactive') {
+            $query->where('is_active', false);
+        }
+
+        $courseId = $request->get('course_id', 'all');
+        if ($courseId && $courseId !== 'all') {
+            $query->where('course_id', $courseId);
+        }
+
+        $quizzes = $query->latest()->paginate(10)->appends($request->query());
+
+        $categories = Quiz::query()->select('category')->distinct()->pluck('category')->filter()->values();
+        $difficulties = [
+            'umum' => 'Umum',
+            'calon_paskibra' => 'Calon Paskibra',
+            'wiramuda' => 'Wiramuda',
+            'wiratama' => 'Wiratama',
+            'instruktur_muda' => 'Instruktur Muda',
+            'instruktur' => 'Instruktur',
+        ];
+        $courses = Course::query()->orderBy('title')->get(['id', 'title']);
+
+        return view('admin.quizzes.index', [
+            'quizzes' => $quizzes,
+            'categories' => $categories,
+            'difficulties' => $difficulties,
+            'courseOptions' => $courses,
+            'filters' => [
+                'search' => $search,
+                'category' => $category,
+                'difficulty' => $difficulty,
+                'status' => $status,
+                'course_id' => $courseId,
+            ],
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $courses = Course::all();
+        $courses = Course::orderBy('title')->get();
+
         return view('admin.quizzes.create', compact('courses'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'course_id' => 'nullable|exists:courses,id',
-            'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
-            'difficulty' => 'required|in:basic,intermediate,advanced',
-            'time_limit' => 'nullable|integer|min:1',
-            'is_active' => 'required|boolean',
-        ]);
+        $data = $this->validateQuiz($request);
 
-        Quiz::create($request->all() + ['created_by' => auth()->id()]);
+        Quiz::create($data + ['created_by' => auth()->id()]);
 
         return redirect()->route('admin.quizzes.index')->with('success', 'Kuis berhasil dibuat.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Quiz $quiz)
     {
-        // Later for showing questions
         return redirect()->route('admin.quizzes.questions.index', $quiz);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Quiz $quiz)
     {
-        $courses = Course::all();
+        $courses = Course::orderBy('title')->get();
+
         return view('admin.quizzes.edit', compact('quiz', 'courses'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Quiz $quiz)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'course_id' => 'nullable|exists:courses,id',
-            'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
-            'difficulty' => 'required|in:basic,intermediate,advanced',
-            'time_limit' => 'nullable|integer|min:1',
-            'is_active' => 'required|boolean',
-        ]);
+        $data = $this->validateQuiz($request, $quiz);
 
-        $quiz->update($request->all());
+        $quiz->update($data);
 
         return redirect()->route('admin.quizzes.index')->with('success', 'Kuis berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Quiz $quiz)
     {
         $quiz->delete();
+
         return redirect()->route('admin.quizzes.index')->with('success', 'Kuis berhasil dihapus.');
+    }
+
+    private function validateQuiz(Request $request, ?Quiz $quiz = null): array
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'course_id' => 'nullable|exists:courses,id',
+            'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
+            'difficulty' => 'required|in:umum,calon_paskibra,wiramuda,wiratama,instruktur_muda,instruktur',
+            'time_limit' => 'nullable|integer|min:1',
+            'passing_score' => 'nullable|integer|min:1|max:100',
+            'max_attempts' => 'nullable|integer|min:1|max:10',
+            'allow_retake' => 'nullable|boolean',
+            'show_results_immediately' => 'nullable|boolean',
+            'published_at' => 'nullable|date',
+            'is_active' => 'required|boolean',
+        ]);
+
+        $data['passing_score'] = $data['passing_score'] ?? 70;
+        $data['max_attempts'] = $data['max_attempts'] ?? 3;
+        $data['allow_retake'] = $request->boolean('allow_retake');
+        $data['show_results_immediately'] = $request->boolean('show_results_immediately');
+        $data['is_active'] = $request->boolean('is_active');
+        $data['published_at'] = $data['published_at']
+            ? Carbon::parse($data['published_at'])
+            : ($quiz?->published_at ?? Carbon::now());
+
+        return $data;
     }
 }

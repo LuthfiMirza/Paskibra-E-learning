@@ -3,86 +3,132 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Report;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Carbon;
 
 class ReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $reports = Report::with('creator')->latest()->paginate(10);
-        return view('admin.reports.index', compact('reports'));
+        $query = Announcement::with('creator');
+
+        $search = trim((string) $request->get('search', ''));
+        if ($search !== '') {
+            $query->where(function ($builder) use ($search) {
+                $builder->where('title', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%");
+            });
+        }
+
+        $type = (string) $request->get('type', 'all');
+        if ($type !== '' && $type !== 'all') {
+            $query->where('type', $type);
+        }
+
+        $status = (string) $request->get('status', 'all');
+        if ($status === 'active') {
+            $query->where('is_active', true);
+        } elseif ($status === 'inactive') {
+            $query->where('is_active', false);
+        }
+
+        $pin = (string) $request->get('pin', 'all');
+        if ($pin === 'pinned') {
+            $query->where('is_pinned', true);
+        } elseif ($pin === 'unpinned') {
+            $query->where('is_pinned', false);
+        }
+
+        $announcements = $query->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->paginate(12)
+            ->appends($request->query());
+
+        return view('admin.reports.index', [
+            'announcements' => $announcements,
+            'typeOptions' => $this->announcementTypes(),
+            'filters' => [
+                'search' => $search,
+                'type' => $type,
+                'status' => $status,
+                'pin' => $pin,
+            ],
+        ]);
     }
 
     public function create()
     {
-        return view('admin.reports.create');
+        return view('admin.reports.create', [
+            'typeOptions' => $this->announcementTypes(),
+        ]);
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|string|max:50',
-            'period_start' => 'nullable|date',
-            'period_end' => 'nullable|date|after_or_equal:period_start',
-            'filters' => 'nullable',
-        ]);
+        $data = $this->validateAnnouncement($request);
 
-        $report = new Report();
-        $report->fill([
-            'title' => $data['title'],
-            'type' => $data['type'],
-            'period_start' => $data['period_start'] ?? null,
-            'period_end' => $data['period_end'] ?? null,
-            'filters' => $this->parseFilters($request->input('filters')),
+        Announcement::create($data + [
             'created_by' => auth()->id(),
         ]);
-        $report->save();
 
-        return redirect()->route('admin.reports.index')->with('success', 'Report preset dibuat.');
+        return redirect()->route('admin.reports.index')->with('success', 'Pengumuman berhasil dibuat.');
     }
 
-    public function edit(Report $report)
+    public function edit(Announcement $report)
     {
-        return view('admin.reports.edit', compact('report'));
+        return view('admin.reports.edit', [
+            'announcement' => $report,
+            'typeOptions' => $this->announcementTypes(),
+        ]);
     }
 
-    public function update(Request $request, Report $report)
+    public function update(Request $request, Announcement $report)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|string|max:50',
-            'period_start' => 'nullable|date',
-            'period_end' => 'nullable|date|after_or_equal:period_start',
-            'filters' => 'nullable',
-        ]);
+        $data = $this->validateAnnouncement($request);
 
-        $report->update([
-            'title' => $data['title'],
-            'type' => $data['type'],
-            'period_start' => $data['period_start'] ?? null,
-            'period_end' => $data['period_end'] ?? null,
-            'filters' => $this->parseFilters($request->input('filters')),
-        ]);
+        $report->update($data);
 
-        return redirect()->route('admin.reports.index')->with('success', 'Report preset diperbarui.');
+        return redirect()->route('admin.reports.index')->with('success', 'Pengumuman berhasil diperbarui.');
     }
 
-    public function destroy(Report $report)
+    public function destroy(Announcement $report)
     {
         $report->delete();
-        return redirect()->route('admin.reports.index')->with('success', 'Report preset dihapus.');
+
+        return redirect()->route('admin.reports.index')->with('success', 'Pengumuman dihapus.');
     }
 
-    private function parseFilters($filters)
+    private function validateAnnouncement(Request $request): array
     {
-        if (is_array($filters)) return $filters;
-        if (is_string($filters)) {
-            $json = json_decode($filters, true);
-            return json_last_error() === JSON_ERROR_NONE ? $json : null;
-        }
-        return null;
+        $typeOptions = array_keys($this->announcementTypes());
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'type' => ['required', Rule::in($typeOptions)],
+            'content' => ['required', 'string'],
+            'published_at' => ['nullable', 'date'],
+            'is_pinned' => ['nullable', 'boolean'],
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
+        $validated['is_pinned'] = $request->boolean('is_pinned');
+        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['published_at'] = $validated['published_at']
+            ? Carbon::parse($validated['published_at'])
+            : Carbon::now();
+
+        return $validated;
+    }
+
+    private function announcementTypes(): array
+    {
+        return [
+            'urgent' => 'Mendesak',
+            'important' => 'Penting',
+            'general' => 'Umum',
+            'event' => 'Kegiatan',
+        ];
     }
 }
-

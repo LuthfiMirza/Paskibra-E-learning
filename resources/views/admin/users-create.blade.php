@@ -56,13 +56,13 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm text-slate-600 mb-1">Angkatan</label>
+                <label class="block text-sm text-slate-600 mb-1">Tingkatan</label>
                 <input type="number" name="angkatan" value="{{ old('angkatan') }}" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label class="block text-sm text-slate-600 mb-1">NIS</label>
+                <label class="block text-sm text-slate-600 mb-1">NRA (Nomor Registrasi Anggota)</label>
                 <input name="nis" value="{{ old('nis') }}" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
@@ -81,4 +81,3 @@
     </form>
 </div>
 @endsection
-

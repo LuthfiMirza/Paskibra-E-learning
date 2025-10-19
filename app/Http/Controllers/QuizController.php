@@ -15,19 +15,29 @@ class QuizController extends Controller
     /**
      * Display a listing of quizzes.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        
+        $search = trim((string) $request->get('search', ''));
+
         // Get available quizzes
         $quizzes = Quiz::with(['course', 'questions'])
             ->where('is_active', true)
-            ->where('published_at', '<=', now())
-            ->orderBy('created_at', 'desc')
+            ->where(function ($builder) {
+                $builder->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            })
+            ->when($search !== '', function ($builder) use ($search) {
+                $builder->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->orderByDesc('published_at')->orderByDesc('created_at')
             ->get();
 
         // If no quizzes in database, create dummy data for demo
-        if ($quizzes->isEmpty()) {
+        if ($quizzes->isEmpty() && $search === '') {
             $quizzes = collect([
                 (object) [
                     'id' => 1,
@@ -35,11 +45,14 @@ class QuizController extends Controller
                     'description' => 'Uji pemahaman Anda tentang sejarah, filosofi, dan nilai-nilai dasar PASKIBRA.',
                     'category' => 'kepaskibraan',
                     'category_display' => 'Kepaskibraan',
-                    'difficulty' => 'basic',
-                    'difficulty_display' => 'Pemula',
+                    'difficulty' => 'umum',
+                    'difficulty_display' => 'Umum',
                     'time_limit' => 15,
                     'passing_score' => 70,
                     'allow_retake' => true,
+                    'max_attempts' => 3,
+                    'is_active' => true,
+                    'published_at' => now(),
                     'questions' => collect(range(1, 10)), // 10 questions
                 ],
                 (object) [
@@ -48,11 +61,14 @@ class QuizController extends Controller
                     'description' => 'Tes kemampuan Anda dalam memahami teknik-teknik baris berbaris yang benar.',
                     'category' => 'baris_berbaris',
                     'category_display' => 'Baris Berbaris',
-                    'difficulty' => 'intermediate',
-                    'difficulty_display' => 'Menengah',
+                    'difficulty' => 'calon_paskibra',
+                    'difficulty_display' => 'Calon Paskibra',
                     'time_limit' => 20,
                     'passing_score' => 75,
                     'allow_retake' => true,
+                    'max_attempts' => 3,
+                    'is_active' => true,
+                    'published_at' => now(),
                     'questions' => collect(range(1, 15)), // 15 questions
                 ],
                 (object) [
@@ -61,11 +77,14 @@ class QuizController extends Controller
                     'description' => 'Evaluasi pemahaman Anda tentang prinsip-prinsip kepemimpinan dalam PASKIBRA.',
                     'category' => 'kepemimpinan',
                     'category_display' => 'Kepemimpinan',
-                    'difficulty' => 'advanced',
-                    'difficulty_display' => 'Lanjutan',
+                    'difficulty' => 'instruktur_muda',
+                    'difficulty_display' => 'Instruktur Muda',
                     'time_limit' => 30,
                     'passing_score' => 80,
                     'allow_retake' => true,
+                    'max_attempts' => 3,
+                    'is_active' => true,
+                    'published_at' => now(),
                     'questions' => collect(range(1, 20)), // 20 questions
                 ],
             ]);
@@ -91,7 +110,11 @@ class QuizController extends Controller
             ])->keyBy('quiz_id');
         }
 
-        return view('quizzes.index', compact('quizzes', 'userAttempts'));
+        return view('quizzes.index', [
+            'quizzes' => $quizzes,
+            'userAttempts' => $userAttempts,
+            'search' => $search,
+        ]);
     }
 
     /**

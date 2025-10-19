@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Lesson extends Model
 {
@@ -63,9 +64,19 @@ class Lesson extends Model
      */
     public function getFileUrlAttribute()
     {
-        if ($this->file_path) {
-            return asset('storage/' . $this->file_path);
+        if (! $this->file_path) {
+            return null;
         }
+
+        // Support absolute URLs or storage paths
+        if (filter_var($this->file_path, FILTER_VALIDATE_URL)) {
+            return $this->file_path;
+        }
+
+        if (Storage::disk('public')->exists($this->file_path)) {
+            return route('lessons.file', $this);
+        }
+
         return null;
     }
 }

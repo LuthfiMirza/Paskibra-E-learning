@@ -10,9 +10,12 @@ use App\Http\Controllers\RankingController;
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
+use App\Http\Controllers\Admin\CourseLessonController as AdminCourseLessonController;
 use App\Http\Controllers\Admin\QuizController as AdminQuizController;
+use App\Http\Controllers\Admin\QuizQuestionController as AdminQuizQuestionController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Auth\Admin\LoginController as AdminLoginController;
 use App\Http\Middleware\AdminMiddleware;
@@ -26,10 +29,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
-// Dashboard Redesign Routes
-Route::get('/dashboard-redesign', function () {
-    return view('dashboard-redesign');
-})->name('dashboard.redesign');
+// Dashboard Redesign Routes (uses real DB data)
+Route::get('/dashboard-redesign', [DashboardController::class, 'redesign'])
+    ->middleware(['auth'])
+    ->name('dashboard.redesign');
 
 Route::get('/dashboard-modern', function () {
     return view('dashboard-modern');
@@ -56,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
     Route::get('/courses/{course}/lesson/{module}', [CourseController::class, 'lesson'])->name('courses.lesson');
+    Route::get('/lessons/{lesson}/file', [CourseController::class, 'file'])->name('lessons.file');
+    Route::get('/lesson-media/{path}', [CourseController::class, 'media'])->where('path', '.*')->name('lessons.media');
     
     // Grade routes
     Route::get('/grades', [GradeController::class, 'index'])->name('grades.index');
@@ -70,6 +75,7 @@ Route::middleware('auth')->group(function () {
     // Notification routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/recent', [NotificationController::class, 'getRecent'])->name('notifications.recent');
+    Route::get('/search', SearchController::class)->name('search');
     Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 });
@@ -91,7 +97,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/analytics', [AdminController::class, 'reports'])->name('analytics');
 
         Route::resource('courses', AdminCourseController::class);
+        Route::resource('courses.lessons', AdminCourseLessonController::class);
         Route::resource('quizzes', AdminQuizController::class);
+        Route::resource('quizzes.questions', AdminQuizQuestionController::class);
         // CRUD Reports tersimpan
         Route::resource('reports', AdminReportController::class);
     });

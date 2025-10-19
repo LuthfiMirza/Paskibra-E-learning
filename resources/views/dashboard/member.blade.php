@@ -107,28 +107,6 @@
                 </span>
             </div>
         </div>
-
-        <!-- Card 4: Ranking -->
-        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-lg transition-all duration-300 hover-lift">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <div class="p-3 bg-red-100 rounded-lg">
-                        <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Ranking Kelas</p>
-                        <p class="text-2xl font-bold text-gray-900">#3<span class="text-sm text-gray-500">/45</span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-4">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    🥉 Top 3
-                </span>
-            </div>
-        </div>
     </div>
 
     <!-- Quick Actions Widget -->

@@ -22,24 +22,19 @@
             @enderror
         </div>
 
-        <!-- NIS -->
+        <!-- NRA -->
         <div class="mb-4">
-            <label for="nis" class="form-label">NIS (Nomor Induk Siswa)</label>
-            <input id="nis" class="form-input w-full" type="text" name="nis" value="{{ old('nis') }}" placeholder="Contoh: 12345678" />
+            <label for="nis" class="form-label">NRA (Nomor Registrasi Anggota)</label>
+            <input id="nis" class="form-input w-full" type="text" name="nis" value="{{ old('nis') }}" placeholder="Contoh: NRA0001" />
             @error('nis')
                 <div class="error-message">{{ $message }}</div>
             @enderror
         </div>
 
-        <!-- Angkatan -->
+        <!-- Tingkatan -->
         <div class="mb-4">
-            <label for="angkatan" class="form-label">Angkatan</label>
-            <select id="angkatan" class="form-input w-full" name="angkatan">
-                <option value="">Pilih Angkatan</option>
-                @for($year = date('Y'); $year >= 2020; $year--)
-                    <option value="{{ $year }}" {{ old('angkatan') == $year ? 'selected' : '' }}>{{ $year }}</option>
-                @endfor
-            </select>
+            <label for="angkatan" class="form-label">Tingkatan</label>
+            <input id="angkatan" class="form-input w-full" type="text" name="angkatan" value="{{ old('angkatan') }}" placeholder="Contoh: 1" />
             @error('angkatan')
                 <div class="error-message">{{ $message }}</div>
             @enderror

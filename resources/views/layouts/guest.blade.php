@@ -135,7 +135,7 @@
         <div class="w-full sm:max-w-md mt-6 px-6 py-8 auth-card overflow-hidden">
             <!-- Logo Section -->
             <div class="logo-container">
-                <img src="{{ asset('images/logopaskib.jpg') }}" alt="PASKIBRA Logo" onerror="this.src='{{ asset('images/paskibra/logo.jpg') }}'">
+                <img src="{{ asset('images/logopaskib.jpg') }}" alt="PASKIBRA Logo" onerror="this.src='{{ asset('images/paskibra/new_logo.jpg') }}'">
                 <div class="logo-text">PASKIBRA WiraPurusa</div>
                 <div class="logo-subtitle">E-Learning Platform</div>
             </div>

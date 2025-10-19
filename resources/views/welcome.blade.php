@@ -388,7 +388,7 @@
             
             <!-- Logo dan Deskripsi -->
             <div class="footer-section about">
-                <img src="{{ asset('images/logopaskib.jpg') }}" alt="Logo PASKIBRA" class="footer-logo" onerror="this.src='{{ asset('images/paskibra/logo.jpg') }}'"/>
+                <img src="{{ asset('images/logopaskib.jpg') }}" alt="Logo PASKIBRA" class="footer-logo" onerror="this.src='{{ asset('images/paskibra/new_logo.jpg') }}'"/>
                 <p>Organisasi Paskibra Wira Purusa - Membangun generasi penerus yang disiplin dan berprestasi.</p>
             </div>
 
@@ -402,8 +402,7 @@
             <!-- Kontak -->
             <div class="footer-section contact">
                 <h3>Kontak Person</h3>
-                <p>Telepon: <a href="tel:+628123456789">+62 812-3456-789</a></p>
-                <p>Email: <a href="mailto:info@paskibra.org">info@paskibra.org</a></p>
+                                <p>Email: <a href="mailto:ppwp.provdkijakarta@gmail.com">ppwp.provdkijakarta@gmail.com</a></p>
             </div>
 
             <!-- Media Sosial -->

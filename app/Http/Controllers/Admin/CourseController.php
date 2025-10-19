@@ -11,10 +11,58 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::with('creator')->latest()->paginate(10);
-        return view('admin.courses', compact('courses'));
+        $query = Course::with('creator');
+
+        $search = trim((string) $request->get('search', ''));
+        if ($search !== '') {
+            $query->where(function ($builder) use ($search) {
+                $builder->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $category = (string) $request->get('category', 'all');
+        if ($category !== '' && $category !== 'all') {
+            $query->where('category', $category);
+        }
+
+        $difficulty = (string) $request->get('difficulty', 'all');
+        if ($difficulty !== '' && $difficulty !== 'all') {
+            $query->where('difficulty', $difficulty);
+        }
+
+        $status = (string) $request->get('status', 'all');
+        if ($status === 'active') {
+            $query->where('is_active', true);
+        } elseif ($status === 'inactive') {
+            $query->where('is_active', false);
+        }
+
+        $courses = $query->latest()->paginate(10)->appends($request->query());
+
+        $categories = Course::query()->select('category')->distinct()->pluck('category')->filter()->values();
+        $difficulties = [
+            'umum' => 'Umum',
+            'calon_paskibra' => 'Calon Paskibra',
+            'wiramuda' => 'Wiramuda',
+            'wiratama' => 'Wiratama',
+            'instruktur_muda' => 'Instruktur Muda',
+            'instruktur' => 'Instruktur',
+        ];
+
+        return view('admin.courses', [
+            'courses' => $courses,
+            'categories' => $categories,
+            'difficulties' => $difficulties,
+            'filters' => [
+                'search' => $search,
+                'category' => $category,
+                'difficulty' => $difficulty,
+                'status' => $status,
+            ],
+        ]);
     }
 
     /**
@@ -34,7 +82,7 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
-            'difficulty' => 'required|in:basic,intermediate,advanced',
+            'difficulty' => 'required|in:umum,calon_paskibra,wiramuda,wiratama,instruktur_muda,instruktur',
             'is_active' => 'required|boolean',
         ]);
 
@@ -43,7 +91,7 @@ class CourseController extends Controller
             'description' => $request->description,
             'category' => $request->category,
             'difficulty' => $request->difficulty,
-            'is_active' => $request->is_active,
+            'is_active' => $request->boolean('is_active'),
             'created_by' => auth()->id(),
         ]);
 
@@ -75,7 +123,7 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'required|in:kepaskibraan,baris_berbaris,wawasan,kepemimpinan,protokoler',
-            'difficulty' => 'required|in:basic,intermediate,advanced',
+            'difficulty' => 'required|in:umum,calon_paskibra,wiramuda,wiratama,instruktur_muda,instruktur',
             'is_active' => 'required|boolean',
         ]);
 
@@ -84,7 +132,7 @@ class CourseController extends Controller
             'description' => $request->description,
             'category' => $request->category,
             'difficulty' => $request->difficulty,
-            'is_active' => $request->is_active,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return redirect()->route('admin.courses.index')->with('success', 'Kursus diperbarui.');
