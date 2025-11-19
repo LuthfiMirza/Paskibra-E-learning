@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 class CourseController extends Controller
 {
@@ -13,10 +14,17 @@ class CourseController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
+        $studentLevel = $this->getUserLearningLevel($user);
+        $restrictToLevel = $user && $user->role === 'student';
+
         $query = Course::query()
             ->with(['creator'])
             ->withCount('lessons')
-            ->where('is_active', true);
+            ->where('is_active', true)
+            ->when($restrictToLevel, function ($builder) use ($studentLevel) {
+                $builder->where('difficulty', $studentLevel);
+            });
 
         $search = trim((string) $request->get('search', ''));
         if ($search !== '') {
@@ -44,24 +52,40 @@ class CourseController extends Controller
         $featuredCourse = Course::query()
             ->withCount('lessons')
             ->where('is_active', true)
+            ->when($restrictToLevel, function ($builder) use ($studentLevel) {
+                $builder->where('difficulty', $studentLevel);
+            })
             ->orderByDesc('created_at')
             ->first();
 
         $categories = Course::query()
             ->select('category')
             ->distinct()
+            ->where('is_active', true)
+            ->when($restrictToLevel, function ($builder) use ($studentLevel) {
+                $builder->where('difficulty', $studentLevel);
+            })
             ->pluck('category')
             ->filter()
             ->values();
 
-        $difficulties = collect([
+        $difficultyOptions = [
             'umum' => 'Umum',
             'calon_paskibra' => 'Calon Paskibra',
             'wiramuda' => 'Wiramuda',
             'wiratama' => 'Wiratama',
             'instruktur_muda' => 'Instruktur Muda',
             'instruktur' => 'Instruktur',
-        ]);
+        ];
+
+        $difficulties = collect($difficultyOptions);
+
+        if ($restrictToLevel) {
+            $difficulties = collect([
+                $studentLevel => $difficultyOptions[$studentLevel] ?? ucfirst(str_replace('_', ' ', $studentLevel)),
+            ]);
+            $difficulty = $studentLevel;
+        }
 
         return view('courses.index', [
             'courses' => $courses,
@@ -73,6 +97,9 @@ class CourseController extends Controller
                 'category' => $category,
                 'difficulty' => $difficulty,
             ],
+            'restrictedLevelLabel' => $restrictToLevel
+                ? ($difficultyOptions[$studentLevel] ?? 'Umum')
+                : null,
         ]);
     }
 
@@ -81,6 +108,9 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
+        $user = Auth::user();
+        $this->ensureStudentCanAccessCourse($user, $course);
+
         $course->load(['lessons' => function ($query) {
             $query->orderBy('order')->orderBy('created_at');
         }, 'creator']);
@@ -91,6 +121,12 @@ class CourseController extends Controller
             ->where('id', '!=', $course->id)
             ->where('category', $course->category)
             ->where('is_active', true)
+            ->when(
+                $user && $user->role === 'student',
+                function ($builder) use ($course) {
+                    $builder->where('difficulty', $course->difficulty);
+                }
+            )
             ->withCount('lessons')
             ->orderByDesc('created_at')
             ->limit(3)
@@ -108,6 +144,9 @@ class CourseController extends Controller
      */
     public function lesson(Course $course, Lesson $module)
     {
+        $user = Auth::user();
+        $this->ensureStudentCanAccessCourse($user, $course);
+
         abort_if($module->course_id !== $course->id, 404);
 
         $course->load(['lessons' => function ($query) {
@@ -134,6 +173,14 @@ class CourseController extends Controller
      */
     public function file(Request $request, Lesson $lesson)
     {
+        $user = Auth::user();
+        if ($lesson->relationLoaded('course') === false) {
+            $lesson->loadMissing('course');
+        }
+        if ($lesson->course) {
+            $this->ensureStudentCanAccessCourse($user, $lesson->course);
+        }
+
         abort_unless($lesson->file_path, 404);
 
         $disk = Storage::disk('public');
@@ -172,5 +219,21 @@ class CourseController extends Controller
             'Content-Type' => $mimeType,
             'Content-Disposition' => $disposition . '; filename="' . $filename . '"',
         ]);
+    }
+
+    private function ensureStudentCanAccessCourse($user, Course $course): void
+    {
+        if ($user && $user->role === 'student' && $course->difficulty !== $this->getUserLearningLevel($user)) {
+            abort(403, 'Materi ini hanya tersedia untuk tingkatan ' . $course->difficulty_display . '.');
+        }
+    }
+
+    private function getUserLearningLevel($user): string
+    {
+        if (!$user) {
+            return 'umum';
+        }
+
+        return $user->learning_level ?: 'umum';
     }
 }

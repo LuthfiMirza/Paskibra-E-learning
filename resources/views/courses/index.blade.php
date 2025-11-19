@@ -66,7 +66,9 @@
                             name="difficulty"
                             class="w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
-                            <option value="all">Semua tingkat</option>
+                            @if(empty($restrictedLevelLabel))
+                                <option value="all">Semua tingkat</option>
+                            @endif
                             @foreach($difficulties as $key => $label)
                                 <option value="{{ $key }}" @selected($activeFilters['difficulty'] === $key)>{{ $label }}</option>
                             @endforeach
@@ -85,6 +87,12 @@
                     </div>
                 </div>
             </form>
+            @if(!empty($restrictedLevelLabel))
+                <div class="mt-4 rounded-xl border border-blue-200 bg-blue-50/60 px-4 py-3 text-sm text-blue-700">
+                    <p class="font-semibold">Menampilkan materi untuk tingkatan {{ $restrictedLevelLabel }}.</p>
+                    <p class="text-blue-600/80">Hubungi admin bila ingin membuka akses tingkatan lain.</p>
+                </div>
+            @endif
 
             @if($featuredCourse)
                 <div class="grid gap-6 lg:grid-cols-3 items-stretch">
@@ -255,7 +263,13 @@
                     </svg>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum ada materi yang sesuai</h3>
-                <p class="text-gray-600 max-w-md mx-auto">Coba ubah kata kunci pencarian atau pilih kategori lain untuk menemukan materi yang Anda butuhkan.</p>
+                <p class="text-gray-600 max-w-md mx-auto">
+                    @if(!empty($restrictedLevelLabel))
+                        Materi untuk tingkatan {{ $restrictedLevelLabel }} sedang disiapkan. Silakan cek kembali nanti atau hubungi instruktur jika membutuhkan akses tambahan.
+                    @else
+                        Coba ubah kata kunci pencarian atau pilih kategori lain untuk menemukan materi yang Anda butuhkan.
+                    @endif
+                </p>
             </div>
         @endif
     </div>
