@@ -180,8 +180,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h4l3 10 4-18 3 8h4" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum ada quiz yang tersedia</h3>
-                <p class="text-gray-600 max-w-md mx-auto">Instruktur belum menerbitkan quiz baru. Silakan periksa kembali nanti atau pelajari materi yang sudah tersedia.</p>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum ada quiz untuk tingkatan ini</h3>
+                <p class="text-gray-600 max-w-md mx-auto">Instruktur belum menerbitkan quiz baru untuk tingkatan belajar Anda. Silakan cek kembali nanti atau lanjutkan mempelajari materi yang tersedia.</p>
             </div>
         @endif
     </div>

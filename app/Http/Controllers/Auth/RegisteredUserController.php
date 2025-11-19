@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -32,12 +33,20 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'nis' => ['nullable', 'string', 'max:20', 'unique:users,nis'],
+            'angkatan' => ['nullable', 'integer'],
+            'learning_level' => ['required', Rule::in(['umum', 'calon_paskibra', 'wiramuda', 'wiratama', 'instruktur_muda', 'instruktur'])],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'nis' => $request->nis,
+            'angkatan' => $request->angkatan,
+            'learning_level' => $request->learning_level,
+            'role' => 'student',
+            'status' => 'active',
             'password' => Hash::make($request->password),
             'email_verified_at' => now(), // Auto-verify email
         ]);

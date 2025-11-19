@@ -111,6 +111,18 @@ class Quiz extends Model
     }
 
     /**
+     * Scope query by learning level/difficulty.
+     */
+    public function scopeForLearningLevel($query, ?string $level)
+    {
+        if (empty($level)) {
+            return $query;
+        }
+
+        return $query->where('difficulty', $level);
+    }
+
+    /**
      * Get user's attempts for this quiz.
      */
     public function userAttempts($userId)

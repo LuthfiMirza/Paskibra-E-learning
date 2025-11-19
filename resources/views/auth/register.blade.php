@@ -9,7 +9,7 @@
             <label for="name" class="form-label">Nama Lengkap</label>
             <input id="name" class="form-input w-full" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" />
             @error('name')
-                <div class="error-message">{{ $message }}</div>
+            <div class="error-message">{{ $message }}</div>
             @enderror
         </div>
 
@@ -18,7 +18,7 @@
             <label for="email" class="form-label">Email</label>
             <input id="email" class="form-input w-full" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" />
             @error('email')
-                <div class="error-message">{{ $message }}</div>
+            <div class="error-message">{{ $message }}</div>
             @enderror
         </div>
 
@@ -27,16 +27,41 @@
             <label for="nis" class="form-label">NRA (Nomor Registrasi Anggota)</label>
             <input id="nis" class="form-input w-full" type="text" name="nis" value="{{ old('nis') }}" placeholder="Contoh: NRA0001" />
             @error('nis')
-                <div class="error-message">{{ $message }}</div>
+            <div class="error-message">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Angkatan -->
+        <div class="mb-4">
+            <label for="angkatan" class="form-label">Angkatan (opsional)</label>
+            <input id="angkatan" class="form-input w-full" type="text" name="angkatan" value="{{ old('angkatan') }}" placeholder="Contoh: 2024" />
+            @error('angkatan')
+            <div class="error-message">{{ $message }}</div>
             @enderror
         </div>
 
         <!-- Tingkatan -->
         <div class="mb-4">
-            <label for="angkatan" class="form-label">Tingkatan</label>
-            <input id="angkatan" class="form-input w-full" type="text" name="angkatan" value="{{ old('angkatan') }}" placeholder="Contoh: 1" />
-            @error('angkatan')
-                <div class="error-message">{{ $message }}</div>
+            <label for="learning_level" class="form-label">Tingkatan</label>
+            <select id="learning_level" class="form-input w-full" name="learning_level" required>
+                @php
+                $levels = [
+                'umum' => 'Umum',
+                'calon_paskibra' => 'Calon Paskibra',
+                'wiramuda' => 'Wiramuda',
+                'wiratama' => 'Wiratama',
+                'instruktur_muda' => 'Instruktur Muda',
+                'instruktur' => 'Instruktur',
+                ];
+                @endphp
+                @foreach($levels as $value => $label)
+                <option value="{{ $value }}" {{ old('learning_level', 'umum') === $value ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+                @endforeach
+            </select>
+            @error('learning_level')
+            <div class="error-message">{{ $message }}</div>
             @enderror
         </div>
 
@@ -45,7 +70,7 @@
             <label for="password" class="form-label">Password</label>
             <input id="password" class="form-input w-full" type="password" name="password" required autocomplete="new-password" />
             @error('password')
-                <div class="error-message">{{ $message }}</div>
+            <div class="error-message">{{ $message }}</div>
             @enderror
         </div>
 
@@ -54,7 +79,7 @@
             <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
             <input id="password_confirmation" class="form-input w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             @error('password_confirmation')
-                <div class="error-message">{{ $message }}</div>
+            <div class="error-message">{{ $message }}</div>
             @enderror
         </div>
 

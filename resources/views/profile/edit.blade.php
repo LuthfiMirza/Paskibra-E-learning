@@ -42,10 +42,23 @@
                 <span class="text-sm text-gray-500">Bergabung {{ auth()->user()->created_at ? auth()->user()->created_at->format('M Y') : 'Nov 2024' }}</span>
             </div>
         </div>
-        <div class="text-right">
+        @php
+            $levelBadge = auth()->user()->learning_level_badge ?? null;
+        @endphp
+        <div class="text-right bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4">
             <div class="text-sm text-gray-500 mb-1">Level PASKIBRA</div>
-            <div class="text-2xl font-bold text-blue-600">7</div>
-            <div class="text-xs text-gray-500">Anggota Terampil</div>
+            <div class="text-2xl font-bold text-indigo-600">{{ auth()->user()->learning_level_display ?? 'Umum' }}</div>
+            <div class="text-xs text-gray-500 mt-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold {{ $levelBadge['color'] ?? 'bg-blue-100 text-blue-700' }}">
+                    {{ $levelBadge['label'] ?? 'Umum' }}
+                </span>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">{{ $levelBadge['description'] ?? 'Anggota PASKIBRA' }}</div>
+            @if(auth()->user()->isStudent())
+                <div class="mt-3 text-xs text-gray-500">
+                    Tingkatan ini menentukan quiz yang bisa Anda akses.
+                </div>
+            @endif
         </div>
     </div>
 </div>

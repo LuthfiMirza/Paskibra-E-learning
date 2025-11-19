@@ -7,13 +7,13 @@
     <h1 class="text-2xl font-bold text-slate-900 mb-6">Edit Pengguna</h1>
 
     @if ($errors->any())
-        <div class="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
-            <ul class="list-disc pl-5">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
+        <ul class="list-disc pl-5">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <form method="POST" action="{{ route('admin.users.update', $user) }}" class="space-y-5 bg-white p-6 rounded-xl border border-slate-200">
@@ -39,7 +39,7 @@
                 <input type="password" name="password_confirmation" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-sm text-slate-600 mb-1">Peran</label>
                 <select name="role" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
@@ -57,8 +57,26 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm text-slate-600 mb-1">Tingkatan</label>
+                <label class="block text-sm text-slate-600 mb-1">Angkatan</label>
                 <input type="number" name="angkatan" value="{{ old('angkatan', $user->angkatan) }}" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm text-slate-600 mb-1">Tingkatan</label>
+                <select name="learning_level" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    @php
+                    $levels = [
+                    'umum' => 'Umum',
+                    'calon_paskibra' => 'Calon Paskibra',
+                    'wiramuda' => 'Wiramuda',
+                    'wiratama' => 'Wiratama',
+                    'instruktur_muda' => 'Instruktur Muda',
+                    'instruktur' => 'Instruktur',
+                    ];
+                    @endphp
+                    @foreach($levels as $value => $label)
+                    <option value="{{ $value }}" {{ old('learning_level', $user->learning_level ?? 'umum') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

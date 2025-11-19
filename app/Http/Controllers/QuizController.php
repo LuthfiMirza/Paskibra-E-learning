@@ -7,7 +7,9 @@ use App\Models\QuizAttempt;
 use App\Models\QuizQuestion;
 use App\Models\QuizAnswer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
@@ -23,6 +25,9 @@ class QuizController extends Controller
         // Get available quizzes
         $quizzes = Quiz::with(['course', 'questions'])
             ->where('is_active', true)
+            ->when($user->role === 'student', function ($builder) use ($user) {
+                $builder->where('difficulty', $this->getUserLearningLevel($user));
+            })
             ->where(function ($builder) {
                 $builder->whereNull('published_at')
                     ->orWhere('published_at', '<=', now());
@@ -88,6 +93,12 @@ class QuizController extends Controller
                     'questions' => collect(range(1, 20)), // 20 questions
                 ],
             ]);
+
+            if ($user->role === 'student') {
+                $quizzes = $quizzes->filter(function ($quiz) use ($user) {
+                    return $quiz->difficulty === $this->getUserLearningLevel($user);
+                })->values();
+            }
         }
 
         // Get user's quiz attempts
@@ -126,7 +137,7 @@ class QuizController extends Controller
         
         // Try to find real quiz first
         $quiz = Quiz::find($quizId);
-        
+
         if (!$quiz) {
             // If no real quiz found, create demo quiz for testing
             $quiz = (object) [
@@ -141,6 +152,8 @@ class QuizController extends Controller
             return view('quizzes.take', compact('quiz'));
         }
         
+        $this->ensureStudentCanAccessQuiz($user, $quiz);
+
         // Check if quiz is active and published
         if (!$quiz->is_active || $quiz->published_at > now()) {
             abort(404, 'Quiz tidak tersedia');
@@ -162,7 +175,22 @@ class QuizController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view('quizzes.take', compact('quiz', 'questions'));
+        $now = Carbon::now();
+        $timerMeta = $this->resolveQuizTimerMeta($user, $quiz, $now);
+
+        if ($timerMeta && ($timerMeta['expired'] ?? false)) {
+            $this->forgetQuizTimer($user, $quiz);
+
+            return redirect()->route('quizzes.index')
+                ->with('error', 'Waktu pengerjaan untuk kuis ini sudah habis. Mulai attempt baru untuk mencoba kembali.');
+        }
+
+        return view('quizzes.take', [
+            'quiz' => $quiz,
+            'questions' => $questions,
+            'timerMeta' => $timerMeta,
+            'serverNow' => $now,
+        ]);
     }
 
     /**
@@ -171,7 +199,16 @@ class QuizController extends Controller
     public function submit(Request $request, Quiz $quiz)
     {
         $user = Auth::user();
-        
+
+        $this->ensureStudentCanAccessQuiz($user, $quiz);
+
+        $timerData = $this->getQuizTimerRaw($user, $quiz);
+        $now = Carbon::now();
+        $startedAt = $timerData['starts_at'] ?? ($request->filled('started_at') ? Carbon::parse($request->input('started_at')) : $now->copy());
+        $deadline = $timerData['ends_at'] ?? ($quiz->time_limit ? $startedAt->copy()->addMinutes($quiz->time_limit) : null);
+        $timeTakenReference = $deadline && $now->greaterThan($deadline) ? $deadline : $now;
+        $timeTaken = max(0, $startedAt->diffInSeconds($timeTakenReference));
+
         $request->validate([
             'answers' => 'required|array',
             'answers.*' => 'required',
@@ -231,9 +268,9 @@ class QuizController extends Controller
                 'score' => $score,
                 'total_questions' => $totalQuestions,
                 'correct_answers' => $correctAnswers,
-                'started_at' => now(),
-                'completed_at' => now(),
-                'time_taken' => 0, // You can calculate this if needed
+                'started_at' => $startedAt,
+                'completed_at' => $now,
+                'time_taken' => $timeTaken,
                 'is_passed' => $passed,
                 'attempt_number' => $attemptNumber,
             ]);
@@ -250,6 +287,7 @@ class QuizController extends Controller
             }
 
             DB::commit();
+            $this->forgetQuizTimer($user, $quiz);
 
             // Return JSON response for AJAX
             if ($request->expectsJson()) {
@@ -312,5 +350,75 @@ class QuizController extends Controller
             ->paginate(10);
 
         return view('quizzes.history', compact('attempts'));
+    }
+
+    private function resolveQuizTimerMeta($user, Quiz $quiz, Carbon $now): ?array
+    {
+        if (!$quiz->time_limit || $quiz->time_limit <= 0) {
+            return null;
+        }
+
+        $cacheKey = $this->quizTimerCacheKey($user->id, $quiz->id);
+        $timer = Cache::get($cacheKey);
+
+        if (!$timer) {
+            $timer = [
+                'starts_at' => $now->copy(),
+                'ends_at' => $now->copy()->addMinutes($quiz->time_limit),
+            ];
+
+            Cache::put($cacheKey, $timer, $timer['ends_at']->copy()->addMinutes(5));
+        }
+
+        $expired = $now->greaterThanOrEqualTo($timer['ends_at']);
+
+        return [
+            'starts_at' => $timer['starts_at'],
+            'ends_at' => $timer['ends_at'],
+            'remaining_seconds' => max(0, $now->diffInSeconds($timer['ends_at'], false)),
+            'total_seconds' => max(0, $quiz->time_limit * 60),
+            'expired' => $expired,
+        ];
+    }
+
+    private function quizTimerCacheKey(int $userId, int $quizId): string
+    {
+        return "quiz_timer_user_{$userId}_quiz_{$quizId}";
+    }
+
+    private function getQuizTimerRaw($user, Quiz $quiz): ?array
+    {
+        if (!$quiz->time_limit || $quiz->time_limit <= 0) {
+            return null;
+        }
+
+        return Cache::get($this->quizTimerCacheKey($user->id, $quiz->id));
+    }
+
+    private function forgetQuizTimer($user, Quiz $quiz): void
+    {
+        if (!$quiz->time_limit || $quiz->time_limit <= 0) {
+            return;
+        }
+
+        Cache::forget($this->quizTimerCacheKey($user->id, $quiz->id));
+    }
+
+    /**
+     * Ensure student can see / access quiz level.
+     */
+    private function ensureStudentCanAccessQuiz($user, Quiz $quiz): void
+    {
+        if ($user->role === 'student' && $quiz->difficulty !== $this->getUserLearningLevel($user)) {
+            abort(403, 'Quiz ini hanya tersedia untuk tingkatan ' . $quiz->difficulty_display . '.');
+        }
+    }
+
+    /**
+     * Resolve user learning level with default.
+     */
+    private function getUserLearningLevel($user): string
+    {
+        return $user->learning_level ?: 'umum';
     }
 }

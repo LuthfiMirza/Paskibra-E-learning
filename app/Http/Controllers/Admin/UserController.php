@@ -100,6 +100,7 @@ class UserController extends Controller
             'status' => ['required', Rule::in(['active', 'inactive', 'alumni'])],
             'nis' => ['nullable', 'string', 'max:20', 'unique:users,nis'],
             'angkatan' => ['nullable', 'integer'],
+            'learning_level' => ['required', Rule::in(['umum', 'calon_paskibra', 'wiramuda', 'wiratama', 'instruktur_muda', 'instruktur'])],
             'avatar' => ['nullable', 'url'],
             'bio' => ['nullable', 'string'],
         ]);
@@ -128,6 +129,7 @@ class UserController extends Controller
             'status' => ['required', Rule::in(['active', 'inactive', 'alumni'])],
             'nis' => ['nullable', 'string', 'max:20', Rule::unique('users', 'nis')->ignore($user->id)],
             'angkatan' => ['nullable', 'integer'],
+            'learning_level' => ['required', Rule::in(['umum', 'calon_paskibra', 'wiramuda', 'wiratama', 'instruktur_muda', 'instruktur'])],
             'avatar' => ['nullable', 'url'],
             'bio' => ['nullable', 'string'],
         ]);

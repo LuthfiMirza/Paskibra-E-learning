@@ -117,6 +117,7 @@ class RolePermissionSeeder extends Seeder
                 'password' => Hash::make('admin123'),
                 'nis' => 'ADM001',
                 'angkatan' => 2024,
+                'learning_level' => 'instruktur',
                 'status' => 'active',
                 'email_verified_at' => now(),
             ]
@@ -130,6 +131,7 @@ class RolePermissionSeeder extends Seeder
                 'password' => Hash::make('pelatih123'),
                 'nis' => 'PLT001',
                 'angkatan' => 2020,
+                'learning_level' => 'instruktur',
                 'status' => 'active',
                 'email_verified_at' => now(),
             ]
@@ -143,6 +145,7 @@ class RolePermissionSeeder extends Seeder
                 'password' => Hash::make('anggota123'),
                 'nis' => 'AGT001',
                 'angkatan' => 2024,
+                'learning_level' => 'calon_paskibra',
                 'status' => 'active',
                 'email_verified_at' => now(),
             ]

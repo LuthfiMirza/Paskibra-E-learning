@@ -37,21 +37,30 @@ class DashboardController extends Controller
     private function getStats($user)
     {
         // Get real-time statistics from database
+        $level = $this->userLearningLevel($user);
+
+        $totalQuizzesQuery = Quiz::where('is_active', true);
+        $availableQuizzesQuery = Quiz::where('is_active', true)
+            ->where(function ($builder) {
+                $builder->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            });
+
+        if ($user->role === 'student') {
+            $totalQuizzesQuery->forLearningLevel($level);
+            $availableQuizzesQuery->forLearningLevel($level);
+        }
+
         return [
             'total_courses' => Course::where('is_active', true)->count(),
-            'total_quizzes' => Quiz::where('is_active', true)->count(),
+            'total_quizzes' => $totalQuizzesQuery->count(),
             // Quick actions dynamic data
             'available_lessons' => Lesson::active()
                 ->whereHas('course', function ($q) {
                     $q->where('is_active', true);
                 })
                 ->count(),
-            'available_quizzes' => Quiz::where('is_active', true)
-                ->where(function ($builder) {
-                    $builder->whereNull('published_at')
-                        ->orWhere('published_at', '<=', now());
-                })
-                ->count(),
+            'available_quizzes' => $availableQuizzesQuery->count(),
             'completed_quizzes' => QuizAttempt::where('user_id', $user->id)->completed()->count(),
             'average_score' => QuizAttempt::where('user_id', $user->id)
                 ->completed()
@@ -116,6 +125,7 @@ class DashboardController extends Controller
     private function memberDashboard()
     {
         $user = Auth::user();
+        $level = $this->userLearningLevel($user);
         
         $stats = [
             'completed_courses' => 0, // Will implement course completion tracking
@@ -130,11 +140,14 @@ class DashboardController extends Controller
             ->take(6)
             ->get();
 
-        $recentQuizzes = Quiz::active()
-            ->with('course')
-            ->latest()
-            ->take(5)
-            ->get();
+        $recentQuizzesQuery = Quiz::active()
+            ->with('course');
+
+        if ($user->role === 'student') {
+            $recentQuizzesQuery->forLearningLevel($level);
+        }
+
+        $recentQuizzes = $recentQuizzesQuery->latest()->take(5)->get();
 
         $recentAnnouncements = Announcement::active()
             ->published()
@@ -154,5 +167,10 @@ class DashboardController extends Controller
             'recentAnnouncements', 
             'myAchievements'
         ));
+    }
+
+    private function userLearningLevel($user): string
+    {
+        return $user->learning_level ?: 'umum';
     }
 }

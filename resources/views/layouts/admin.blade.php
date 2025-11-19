@@ -366,10 +366,82 @@
                                 <input type="search" placeholder="Cari sesuatu..." class="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-600 placeholder:text-slate-400 focus:border-indigo-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100" />
                             </div>
 
-                            <button class="relative h-10 w-10 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:text-indigo-600 hover:border-indigo-200">
-                                <svg class="mx-auto h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" /></svg>
-                                <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500"></span>
-                            </button>
+                            <div class="relative">
+                                @php
+                                    $adminNotificationUnread = $adminNotificationUnread ?? 0;
+                                    $adminNotifications = $adminNotifications ?? collect();
+                                @endphp
+                                <button id="admin-notification-trigger" type="button" class="relative h-10 w-10 rounded-2xl border border-slate-200 bg-white text-slate-500 hover:text-indigo-600 hover:border-indigo-200">
+                                    <svg class="mx-auto h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" /></svg>
+                                    @if($adminNotificationUnread > 0)
+                                        <span class="absolute -top-1 -right-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-rose-500 px-1 text-[11px] font-semibold text-white">
+                                            {{ $adminNotificationUnread > 9 ? '9+' : $adminNotificationUnread }}
+                                        </span>
+                                    @endif
+                                </button>
+                                <div id="admin-notification-menu" class="hidden absolute right-0 mt-3 w-[23rem] rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-800/10">
+                                    <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                                        <div>
+                                            <p class="text-sm font-semibold text-slate-900">Aktivitas Terbaru</p>
+                                            <p class="text-xs text-slate-500">Monitor progres siswa dan event terbaru</p>
+                                        </div>
+                                        <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
+                                            {{ $adminNotificationUnread }} baru
+                                        </span>
+                                    </div>
+                                    <div class="max-h-96 divide-y divide-slate-100 overflow-y-auto">
+                                        @forelse($adminNotifications as $activity)
+                                            <div class="flex items-start gap-3 px-5 py-4">
+                                                <div class="flex h-11 w-11 items-center justify-center rounded-2xl {{ $activity['icon_background'] ?? 'bg-slate-100' }}">
+                                                    @php
+                                                        $icon = $activity['icon'] ?? 'bell';
+                                                    @endphp
+                                                    <svg class="h-5 w-5 {{ $activity['icon_color'] ?? 'text-slate-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        @switch($icon)
+                                                            @case('quiz')
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m2-2a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4V6a2 2 0 012-2h10z" />
+                                                                @break
+                                                            @case('trophy')
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21h8m-4 0v-4m6-12h2a2 2 0 01-2 2 4 4 0 01-4 4H10a4 4 0 01-4-4 2 2 0 01-2-2h2m12 0V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2" />
+                                                                @break
+                                                            @case('user')
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                                @break
+                                                            @default
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" />
+                                                        @endswitch
+                                                    </svg>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div class="flex items-center justify-between">
+                                                        <p class="text-sm font-semibold text-slate-900">{{ $activity['title'] }}</p>
+                                                        <span class="text-xs text-slate-400">{{ $activity['time_ago'] ?? '' }}</span>
+                                                    </div>
+                                                    <p class="text-sm text-slate-500">{{ $activity['description'] }}</p>
+                                                    <div class="mt-2 flex flex-wrap items-center gap-2">
+                                                        @if(!empty($activity['badge']))
+                                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{{ $activity['badge'] }}</span>
+                                                        @endif
+                                                        @if(!empty($activity['link']))
+                                                            <a href="{{ $activity['link'] }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">Lihat detail</a>
+                                                        @endif
+                                                        @if(($activity['is_new'] ?? false))
+                                                            <span class="h-2 w-2 rounded-full bg-rose-500"></span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="px-5 py-8 text-center text-sm text-slate-500">
+                                                Belum ada aktivitas terbaru.
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                    <div class="border-t border-slate-100 px-5 py-3 text-center">
+                                        <a href="{{ route('notifications.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700">Lihat pusat notifikasi</a>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="relative">
                                 <button id="admin-profile-trigger" class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-600 hover:border-indigo-200 hover:text-indigo-600">
@@ -442,6 +514,22 @@
                 document.addEventListener('click', (event) => {
                     if (!profileMenu.contains(event.target) && !profileTrigger.contains(event.target)) {
                         profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            const notificationTrigger = document.getElementById('admin-notification-trigger');
+            const notificationMenu = document.getElementById('admin-notification-menu');
+
+            if (notificationTrigger && notificationMenu) {
+                notificationTrigger.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    notificationMenu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!notificationMenu.contains(event.target) && !notificationTrigger.contains(event.target)) {
+                        notificationMenu.classList.add('hidden');
                     }
                 });
             }
@@ -529,4 +617,3 @@
     @stack('scripts')
 </body>
 </html>
-

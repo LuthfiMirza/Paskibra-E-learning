@@ -40,10 +40,53 @@
                 Pastikan koneksi stabil. Jawaban akan tersimpan setelah Anda menekan tombol submit.
             </p>
         </div>
-    </div>
+</div>
 
-    <form method="POST" action="{{ route('quizzes.submit', $quiz->id ?? 0) }}" class="space-y-6">
+    @if(!empty($timerMeta))
+        @php
+            $initialSeconds = max(0, $timerMeta['remaining_seconds'] ?? 0);
+            $initialMinutesDisplay = str_pad(intval(floor($initialSeconds / 60)), 2, '0', STR_PAD_LEFT);
+            $initialSecondsDisplay = str_pad($initialSeconds % 60, 2, '0', STR_PAD_LEFT);
+            $percent = ($timerMeta['total_seconds'] ?? 0) > 0
+                ? max(0, min(100, ($timerMeta['remaining_seconds'] / $timerMeta['total_seconds']) * 100))
+                : 100;
+            $serverNowIso = isset($serverNow) ? $serverNow->toIso8601String() : now()->toIso8601String();
+        @endphp
+        <div
+            id="quiz-timer-panel"
+            data-quiz-timer="1"
+            data-deadline="{{ $timerMeta['ends_at']->toIso8601String() }}"
+            data-server-now="{{ $serverNowIso }}"
+            data-total-seconds="{{ $timerMeta['total_seconds'] }}"
+            data-form-id="quiz-answer-form"
+            class="bg-white border border-orange-200 rounded-3xl shadow-sm p-6 flex flex-col gap-4"
+        >
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.35em] text-orange-500">Timer aktif</p>
+                    <p class="text-4xl font-bold text-gray-900" data-timer-display>{{ $initialMinutesDisplay }}:{{ $initialSecondsDisplay }}</p>
+                    <p class="text-sm text-gray-500 mt-1" data-timer-message>Waktu tersisa akan menghitung mundur secara real-time.</p>
+                </div>
+                <div class="text-sm text-gray-600 bg-orange-50 border border-orange-200 rounded-2xl px-5 py-3">
+                    Jawaban akan dikumpulkan otomatis saat waktu habis. Tetap fokus dan pastikan koneksi stabil.
+                </div>
+            </div>
+            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                    data-timer-progress
+                    class="h-2 bg-green-500 transition-all duration-300 ease-out"
+                    style="width: {{ $percent }}%;"
+                ></div>
+            </div>
+        </div>
+    @endif
+
+    <form method="POST" id="quiz-answer-form" action="{{ route('quizzes.submit', $quiz->id ?? 0) }}" class="space-y-6">
         @csrf
+        @if(!empty($timerMeta))
+            <input type="hidden" name="started_at" value="{{ $timerMeta['starts_at']->toIso8601String() }}">
+            <input type="hidden" name="timer_ends_at" value="{{ $timerMeta['ends_at']->toIso8601String() }}">
+        @endif
         @if(isset($questions) && $questions->count())
             @foreach($questions as $index => $question)
                 <section class="bg-white border border-gray-200 rounded-3xl shadow-sm p-6 sm:p-8 space-y-5">
@@ -135,3 +178,78 @@
     </form>
 </div>
 @endsection
+
+@if(!empty($timerMeta))
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if (window.__QUIZ_TIMER_INITIALIZED__) {
+                    return;
+                }
+                window.__QUIZ_TIMER_INITIALIZED__ = true;
+
+                const timerElement = document.querySelector('[data-quiz-timer]');
+                if (!timerElement) {
+                    return;
+                }
+
+                const display = timerElement.querySelector('[data-timer-display]');
+                const progress = timerElement.querySelector('[data-timer-progress]');
+                const message = timerElement.querySelector('[data-timer-message]');
+                const deadline = Date.parse(timerElement.dataset.deadline || '');
+                const serverNow = Date.parse(timerElement.dataset.serverNow || '');
+                const totalSeconds = parseInt(timerElement.dataset.totalSeconds || '0', 10);
+                const formId = timerElement.dataset.formId || '';
+                const form = document.getElementById(formId);
+
+                if (!deadline || !serverNow || !form || !display) {
+                    return;
+                }
+
+                const offset = Date.now() - serverNow;
+                let autoSubmitted = false;
+
+                const formatTime = (seconds) => {
+                    const total = Math.max(0, seconds);
+                    const mins = Math.floor(total / 60);
+                    const secs = total % 60;
+                    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                };
+
+                const updateTimer = () => {
+                    const now = Date.now() - offset;
+                    const remainingMs = deadline - now;
+                    const remainingSeconds = Math.max(0, Math.floor(remainingMs / 1000));
+
+                    display.textContent = formatTime(remainingSeconds);
+
+                    if (progress && totalSeconds > 0) {
+                        const percent = Math.max(0, Math.min(100, (remainingSeconds / totalSeconds) * 100));
+                        progress.style.width = `${percent}%`;
+                        progress.classList.toggle('bg-green-500', percent > 35);
+                        progress.classList.toggle('bg-orange-500', percent <= 35 && percent > 15);
+                        progress.classList.toggle('bg-red-500', percent <= 15);
+                    }
+
+                    if (remainingSeconds <= 0 && !autoSubmitted) {
+                        autoSubmitted = true;
+                        timerElement.classList.add('border-red-200', 'bg-red-50');
+                        if (message) {
+                            message.textContent = 'Waktu habis, jawaban sedang dikumpulkan otomatis...';
+                        }
+                        const flagInput = document.createElement('input');
+                        flagInput.type = 'hidden';
+                        flagInput.name = 'auto_submitted';
+                        flagInput.value = '1';
+                        form.appendChild(flagInput);
+                        form.submit();
+                        clearInterval(intervalId);
+                    }
+                };
+
+                const intervalId = window.setInterval(updateTimer, 1000);
+                updateTimer();
+            });
+        </script>
+    @endpush
+@endif

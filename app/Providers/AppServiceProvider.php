@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Announcement;
+use App\Support\AdminActivityFeed;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -42,6 +43,24 @@ class AppServiceProvider extends ServiceProvider
             $view->with([
                 'headerAnnouncements' => $announcements,
                 'headerAnnouncementCount' => $announcements->count(),
+            ]);
+        });
+
+        View::composer('layouts.admin', function ($view) {
+            if (!Schema::hasTable('users')) {
+                $view->with([
+                    'adminNotifications' => collect(),
+                    'adminNotificationUnread' => 0,
+                ]);
+
+                return;
+            }
+
+            $activities = AdminActivityFeed::build();
+
+            $view->with([
+                'adminNotifications' => $activities,
+                'adminNotificationUnread' => $activities->where('is_new', true)->count(),
             ]);
         });
     }

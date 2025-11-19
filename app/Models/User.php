@@ -27,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'status',
         'nis',
         'angkatan',
+        'learning_level',
         'avatar',
         'bio',
     ];
@@ -52,6 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'angkatan' => 'integer',
+            'learning_level' => 'string',
         ];
     }
 
@@ -143,6 +145,40 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get human readable learning level.
+     */
+    public function getLearningLevelDisplayAttribute()
+    {
+        $levels = [
+            'umum' => 'Umum',
+            'calon_paskibra' => 'Calon Paskibra',
+            'wiramuda' => 'Wiramuda',
+            'wiratama' => 'Wiratama',
+            'instruktur_muda' => 'Instruktur Muda',
+            'instruktur' => 'Instruktur',
+        ];
+
+        return $levels[$this->learning_level] ?? 'Umum';
+    }
+
+    /**
+     * Get profile badge metadata for learning level.
+     */
+    public function getLearningLevelBadgeAttribute(): array
+    {
+        $badges = [
+            'umum' => ['label' => 'Umum', 'color' => 'bg-blue-100 text-blue-700', 'description' => 'Anggota Baru'],
+            'calon_paskibra' => ['label' => 'Calon Paskibra', 'color' => 'bg-cyan-100 text-cyan-700', 'description' => 'Anggota Pelatihan'],
+            'wiramuda' => ['label' => 'Wiramuda', 'color' => 'bg-emerald-100 text-emerald-700', 'description' => 'Anggota Madya'],
+            'wiratama' => ['label' => 'Wiratama', 'color' => 'bg-yellow-100 text-yellow-700', 'description' => 'Anggota Senior'],
+            'instruktur_muda' => ['label' => 'Instruktur Muda', 'color' => 'bg-purple-100 text-purple-700', 'description' => 'Instruktur Junior'],
+            'instruktur' => ['label' => 'Instruktur', 'color' => 'bg-pink-100 text-pink-700', 'description' => 'Instruktur Utama'],
+        ];
+
+        return $badges[$this->learning_level] ?? $badges['umum'];
+    }
+
+    /**
      * Check if user is active
      */
     public function isActive()
@@ -172,6 +208,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeStudents($query)
     {
         return $query->where('role', 'student');
+    }
+
+    /**
+     * Scope query by learning level.
+     */
+    public function scopeForLearningLevel($query, string $level)
+    {
+        return $query->where('learning_level', $level);
     }
 
     /**
