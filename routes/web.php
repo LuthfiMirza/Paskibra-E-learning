@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\CourseLessonController as AdminCourseLessonContro
 use App\Http\Controllers\Admin\QuizController as AdminQuizController;
 use App\Http\Controllers\Admin\QuizQuestionController as AdminQuizQuestionController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Admin\QuizResultController as AdminQuizResultController;
 use App\Http\Controllers\Auth\Admin\LoginController as AdminLoginController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -99,6 +100,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('courses.lessons', AdminCourseLessonController::class);
         Route::resource('quizzes', AdminQuizController::class);
         Route::resource('quizzes.questions', AdminQuizQuestionController::class);
+        Route::resource('quiz-results', AdminQuizResultController::class)->only(['index', 'show']);
         // CRUD Reports tersimpan
         Route::resource('reports', AdminReportController::class);
     });

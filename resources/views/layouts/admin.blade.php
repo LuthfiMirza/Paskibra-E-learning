@@ -274,6 +274,12 @@
                 'icon' => 'quiz',
             ],
             [
+                'label' => 'Nilai Kuis',
+                'route' => route('admin.quiz-results.index'),
+                'active' => ['admin.quiz-results.*'],
+                'icon' => 'chart',
+            ],
+            [
                 'label' => 'Pengumuman',
                 'route' => route('admin.reports.index'),
                 'active' => ['admin.reports.*', 'admin.analytics'],
