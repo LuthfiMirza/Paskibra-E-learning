@@ -88,9 +88,12 @@ class QuizResultController extends Controller
             'user',
         ]);
 
+        $answers = $quizResult->getRelation('answers');
+        $answerCollection = $answers instanceof \Illuminate\Support\Collection ? $answers : collect($answers);
+
         $questionBreakdown = $quizResult->quiz?->questions
-            ->map(function ($question) use ($quizResult) {
-                $answer = $quizResult->answers->firstWhere('quiz_question_id', $question->id);
+            ->map(function ($question) use ($answerCollection) {
+                $answer = $answerCollection->firstWhere('quiz_question_id', $question->id);
 
                 return [
                     'question' => $question,

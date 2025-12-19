@@ -73,9 +73,12 @@ class GradeController extends Controller
 
         $grade->load(['quiz.questions.options', 'answers.question', 'answers.selectedOption']);
 
+        $answers = $grade->getRelation('answers');
+        $answerCollection = $answers instanceof \Illuminate\Support\Collection ? $answers : collect($answers);
+
         $questionBreakdown = $grade->quiz?->questions
-            ->map(function ($question) use ($grade) {
-                $answer = $grade->answers->firstWhere('quiz_question_id', $question->id);
+            ->map(function ($question) use ($answerCollection) {
+                $answer = $answerCollection->firstWhere('quiz_question_id', $question->id);
 
                 return [
                     'question' => $question,

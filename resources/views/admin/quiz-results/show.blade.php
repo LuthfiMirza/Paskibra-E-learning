@@ -14,7 +14,7 @@
     </div>
 
     <div class="rounded-3xl border border-slate-200 bg-white shadow-[0_25px_50px_-35px_rgba(15,23,42,0.35)] overflow-hidden">
-        <div class="bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 px-6 py-6 text-white">
+        <div class="bg-gradient-to-r from-indigo-800 via-blue-800 to-slate-900 px-6 py-6 text-white">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wide text-white/70">Peserta</p>
