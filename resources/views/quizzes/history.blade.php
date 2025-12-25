@@ -1,6 +1,6 @@
 ﻿@extends('template-modern')
 
-@section('title', 'Riwayat Quiz - PASKIBRA WiraPurusa')
+@section('title', 'Riwayat Quiz - PASKIBRA Wira Purusa')
 
 @section('content')
 <div class="space-y-8">

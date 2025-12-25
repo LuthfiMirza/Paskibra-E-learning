@@ -19,7 +19,7 @@
         <div class="bg-gradient-to-r from-blue-900 via-indigo-700 to-red-600 px-8 py-10 text-white">
             <div class="max-w-3xl">
                 <p class="text-sm uppercase tracking-[0.35em] text-white/70 mb-4">Pusat Materi Resmi</p>
-                <h1 class="text-3xl font-bold mb-3">Materi Pembelajaran PASKIBRA WiraPurusa</h1>
+                <h1 class="text-3xl font-bold mb-3">Materi Pembelajaran PASKIBRA Wira Purusa</h1>
                 <p class="text-base text-white/80">Akses materi terbaru yang dikurasi langsung oleh instruktur PASKIBRA. Pelajari kapan saja dan di mana saja dengan kurikulum yang terstruktur.</p>
             </div>
         </div>

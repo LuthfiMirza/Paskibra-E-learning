@@ -1,7 +1,7 @@
-# PASKIBRA WiraPurusa E-Learning Design System
+# PASKIBRA Wira Purusa E-Learning Design System
 
 ## Overview
-This design system provides a comprehensive guide for maintaining visual consistency and user experience across the PASKIBRA WiraPurusa E-Learning platform.
+This design system provides a comprehensive guide for maintaining visual consistency and user experience across the PASKIBRA Wira Purusa E-Learning platform.
 
 ## Brand Identity
 

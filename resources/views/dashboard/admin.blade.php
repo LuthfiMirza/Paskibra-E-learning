@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Dashboard Admin')
-@section('subtitle', 'Selamat datang, ' . auth()->user()->name . '! Kelola platform PASKIBRA WiraPurusa.')
+@section('subtitle', 'Selamat datang, ' . auth()->user()->name . '! Kelola platform PASKIBRA Wira Purusa.')
 
 @section('content')
 <div class="space-y-6">

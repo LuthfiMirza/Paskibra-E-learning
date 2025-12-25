@@ -79,8 +79,8 @@ class CourseSeeder extends Seeder
         // Create Announcements
         $announcements = [
             [
-                'title' => 'Selamat Datang di Platform E-Learning PASKIBRA WiraPurusa',
-                'content' => 'Selamat datang di platform pembelajaran online resmi PASKIBRA WiraPurusa. Mulai perjalanan pembelajaran Anda dengan mengikuti modul-modul yang telah disediakan.',
+                'title' => 'Selamat Datang di Platform E-Learning PASKIBRA Wira Purusa',
+                'content' => 'Selamat datang di platform pembelajaran online resmi PASKIBRA Wira Purusa. Mulai perjalanan pembelajaran Anda dengan mengikuti modul-modul yang telah disediakan.',
                 'type' => 'important',
                 'is_pinned' => true,
                 'published_at' => now(),

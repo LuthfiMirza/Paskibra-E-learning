@@ -6,7 +6,7 @@
                 <div class="flex items-center gap-3">
                     <img src="{{ asset('images/paskibra/logo.jpg') }}" alt="Logo" class="w-10 h-10 rounded-lg object-cover hidden md:block">
                     <div>
-                        <p class="text-lg font-semibold tracking-tight">PASKIBRA WiraPurusa</p>
+                        <p class="text-lg font-semibold tracking-tight">PASKIBRA Wira Purusa</p>
                         <p class="text-xs text-slate-400">E‑Learning Platform</p>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
 
         <div class="mt-10 pt-6 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-400">
             <p>
-                © {{ now()->year }} PASKIBRA WiraPurusa E‑Learning. Semua hak cipta dilindungi.
+                © {{ now()->year }} PASKIBRA Wira Purusa E‑Learning. Semua hak cipta dilindungi.
             </p>
             <div class="flex items-center gap-4">
                 <a href="#" class="hover:text-white">Kebijakan Privasi</a>

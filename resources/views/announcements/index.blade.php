@@ -1,6 +1,6 @@
 ﻿@extends('template-modern')
 
-@section('title', 'Pengumuman - PASKIBRA WiraPurusa')
+@section('title', 'Pengumuman - PASKIBRA Wira Purusa')
 
 @section('content')
 @php
@@ -11,7 +11,7 @@
         <div class="bg-gradient-to-r from-blue-900 via-slate-900 to-blue-700 px-8 py-10 text-white">
             <div class="max-w-3xl space-y-4">
                 <span class="inline-flex items-center px-3 py-1 text-xs font-semibold tracking-[0.35em] uppercase bg-white/10 border border-white/20 rounded-full">Pusat Informasi</span>
-                <h1 class="text-3xl font-bold leading-tight">Pengumuman Resmi PASKIBRA WiraPurusa</h1>
+                <h1 class="text-3xl font-bold leading-tight">Pengumuman Resmi PASKIBRA Wira Purusa</h1>
                 <p class="text-white/80 text-base">Dapatkan update kegiatan, jadwal latihan, dan informasi penting lainnya secara real-time.</p>
             </div>
         </div>

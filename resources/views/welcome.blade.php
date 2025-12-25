@@ -317,7 +317,7 @@
 <body>
 
 <nav>
-    <div class="logo">PASKIBRA WiraPurusa E-LEARNING</div>
+    <div class="logo">PASKIBRA Wira Purusa E-LEARNING</div>
     <ul>
         @if (Route::has('login'))
             @auth
@@ -350,8 +350,8 @@
 </div>
 
 <section class="hero" role="banner" aria-label="Selamat datang di Paskibra E-Learning">
-    <h1>Selamat Datang di Paskibra WiraPurusa E-Learning</h1>
-    <p>Platform pembelajaran online resmi untuk anggota Paskibra WiraPurusa. Belajar, latih kemampuan, dan raih prestasi bersama kami kapan saja dan di mana saja.</p>
+    <h1>Selamat Datang di Paskibra Wira Purusa E-Learning</h1>
+    <p>Platform pembelajaran online resmi untuk anggota Paskibra Wira Purusa. Belajar, latih kemampuan, dan raih prestasi bersama kami kapan saja dan di mana saja.</p>
     @guest
         <a href="{{ route('register') }}" class="btn-primary" role="button" aria-label="Daftar akun baru">Daftar Sekarang</a>
     @else

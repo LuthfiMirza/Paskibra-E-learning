@@ -9,7 +9,7 @@
             <div class="max-w-3xl space-y-4">
                 <span class="inline-flex items-center px-3 py-1 text-xs font-semibold tracking-[0.35em] uppercase bg-white/10 border border-white/20 rounded-full">Hasil Pencarian</span>
                 <h1 class="text-3xl font-bold leading-tight">{{ $query !== '' ? 'Menampilkan pencarian untuk "'.$query.'"' : 'Cari Materi, Quiz, dan Pengumuman' }}</h1>
-                <p class="text-white/80 text-base">Temukan materi, quiz, dan pengumuman terbaru di platform PASKIBRA WiraPurusa.</p>
+                <p class="text-white/80 text-base">Temukan materi, quiz, dan pengumuman terbaru di platform PASKIBRA Wira Purusa.</p>
             </div>
         </div>
         <div class="p-6 lg:p-8">

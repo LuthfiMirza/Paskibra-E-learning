@@ -137,7 +137,7 @@
                 <ul class="space-y-3">
                     <li class="flex items-start gap-3 text-sm text-gray-700">
                         <span class="mt-0.5 text-blue-600">•</span>
-                        <span>Menguasai materi "{{ $lesson->title }}" sebagai bagian dari kurikulum PASKIBRA WiraPurusa.</span>
+                        <span>Menguasai materi "{{ $lesson->title }}" sebagai bagian dari kurikulum PASKIBRA Wira Purusa.</span>
                     </li>
                     <li class="flex items-start gap-3 text-sm text-gray-700">
                         <span class="mt-0.5 text-blue-600">•</span>

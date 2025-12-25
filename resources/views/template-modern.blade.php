@@ -91,7 +91,7 @@
                     </div>
                     <div class="hidden sm:block">
                         <h1 class="text-xl font-bold text-gray-900">PASKIBRA</h1>
-                        <p class="text-sm text-gray-600">WiraPurusa E-Learning</p>
+                        <p class="text-sm text-gray-600">Wira Purusa E-Learning</p>
                     </div>
                 </div>
             </div>

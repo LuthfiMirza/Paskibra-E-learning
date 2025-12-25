@@ -1,6 +1,6 @@
 ﻿@extends('template-modern')
 
-@section('title', 'Laporan Nilai - PASKIBRA WiraPurusa')
+@section('title', 'Laporan Nilai - PASKIBRA Wira Purusa')
 
 @section('content')
 @php

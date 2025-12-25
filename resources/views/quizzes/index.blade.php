@@ -28,7 +28,7 @@
         <div class="bg-gradient-to-r from-indigo-900 via-blue-800 to-blue-600 px-8 py-10 text-white">
             <div class="max-w-3xl space-y-4">
                 <span class="inline-flex items-center px-3 py-1 text-xs font-semibold tracking-[0.35em] uppercase bg-white/10 border border-white/20 rounded-full">Evaluasi Pembelajaran</span>
-                <h1 class="text-3xl font-bold leading-tight">Quiz Interaktif PASKIBRA WiraPurusa</h1>
+                <h1 class="text-3xl font-bold leading-tight">Quiz Interaktif PASKIBRA Wira Purusa</h1>
                 <p class="text-white/80 text-base">Kerjakan quiz untuk mengukur pemahaman Anda terhadap materi yang telah dipelajari. Hasil quiz akan tercatat otomatis dalam laporan nilai.</p>
             </div>
         </div>

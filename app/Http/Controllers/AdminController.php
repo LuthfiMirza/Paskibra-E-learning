@@ -113,7 +113,7 @@ class AdminController extends Controller
     public function settings()
     {
         $defaults = [
-            'site_name' => 'PASKIBRA WiraPurusa E-Learning',
+            'site_name' => 'PASKIBRA Wira Purusa E-Learning',
             'site_description' => 'Platform pembelajaran online untuk anggota PASKIBRA',
             'admin_email' => 'admin@school.edu',
             'max_file_upload' => '10MB',

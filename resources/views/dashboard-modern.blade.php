@@ -49,7 +49,7 @@
                     </div>
                     <div class="hidden sm:block">
                         <h1 class="text-xl font-bold text-gray-900">PASKIBRA</h1>
-                        <p class="text-sm text-gray-600">WiraPurusa E-Learning</p>
+                        <p class="text-sm text-gray-600">Wira Purusa E-Learning</p>
                     </div>
                 </div>
             </div>
@@ -215,7 +215,7 @@
                     
                     <div class="relative z-10">
                         <h1 class="text-3xl font-bold mb-2">Dashboard Pembelajaran</h1>
-                        <p class="text-lg text-white/90">Selamat datang di PASKIBRA WiraPurusa E-Learning</p>
+                        <p class="text-lg text-white/90">Selamat datang di PASKIBRA Wira Purusa E-Learning</p>
                         <div class="flex items-center mt-4 space-x-4 text-sm">
                             <div class="flex items-center space-x-2">
                                 <div class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
@@ -406,7 +406,7 @@
                     <blockquote class="text-lg font-medium text-gray-900 mb-2">
                         "Disiplin adalah jembatan antara tujuan dan pencapaian."
                     </blockquote>
-                    <cite class="text-sm text-gray-600 font-medium">- Semangat PASKIBRA WiraPurusa</cite>
+                    <cite class="text-sm text-gray-600 font-medium">- Semangat PASKIBRA Wira Purusa</cite>
                 </div>
             </div>
         </div>

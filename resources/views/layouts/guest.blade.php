@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'PASKIBRA WiraPurusa E-Learning') }}</title>
+    <title>{{ config('app.name', 'PASKIBRA Wira Purusa E-Learning') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -136,7 +136,7 @@
             <!-- Logo Section -->
             <div class="logo-container">
                 <img src="{{ asset('images/logopaskib.jpg') }}" alt="PASKIBRA Logo" onerror="this.src='{{ asset('images/paskibra/new_logo.jpg') }}'">
-                <div class="logo-text">PASKIBRA WiraPurusa</div>
+                <div class="logo-text">PASKIBRA Wira Purusa</div>
                 <div class="logo-subtitle">E-Learning Platform</div>
             </div>
 

@@ -1,4 +1,4 @@
-{{-- PASKIBRA WiraPurusa E-Learning UI Components Library --}}
+{{-- PASKIBRA Wira Purusa E-Learning UI Components Library --}}
 
 {{-- Primary Button Component --}}
 @php
@@ -433,7 +433,7 @@
     <div class="relative overflow-hidden rounded-2xl bg-slate-800 p-6 text-white mb-6 border-l-4 border-red-600">
         <div class="absolute inset-0 bg-gradient-to-r from-red-600/10 via-transparent to-yellow-500/10"></div>
         <div class="relative z-10">
-            <h4 class="text-xl font-bold font-display mb-2">🇮🇩 PASKIBRA WiraPurusa</h4>
+            <h4 class="text-xl font-bold font-display mb-2">🇮🇩 PASKIBRA Wira Purusa</h4>
             <p class="text-white/90">Membangun generasi penerus yang disiplin dan berprestasi</p>
         </div>
     </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'PASKIBRA WiraPurusa E-Learning') }} - Dashboard</title>
+    <title>{{ config('app.name', 'PASKIBRA Wira Purusa E-Learning') }} - Dashboard</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -71,7 +71,7 @@
                         <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--paskibra-navy)] to-[var(--paskibra-navy-dark)] text-white font-semibold">PW</span>
                         <div class="hidden sm:block leading-tight">
                             <p class="text-[0.65rem] uppercase tracking-[0.25em] text-[var(--gray-500)]">Paskibra</p>
-                            <p class="text-sm font-semibold text-[var(--paskibra-navy)]">WiraPurusa E-Learning</p>
+                            <p class="text-sm font-semibold text-[var(--paskibra-navy)]">Wira Purusa E-Learning</p>
                         </div>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
                 <div class="space-y-2 lg:order-2 lg:flex lg:flex-1 lg:flex-col lg:items-start lg:gap-2">
                     <div>
                         <h1 class="font-semibold text-[clamp(1.75rem,2.5vw+1rem,2.25rem)] text-[var(--gray-900)]">@yield('title', 'Dashboard')</h1>
-                        <p class="text-sm text-[var(--gray-500)]">@yield('subtitle', 'Selamat datang di PASKIBRA WiraPurusa E-Learning')</p>
+                        <p class="text-sm text-[var(--gray-500)]">@yield('subtitle', 'Selamat datang di PASKIBRA Wira Purusa E-Learning')</p>
                     </div>
                     <div class="w-full lg:max-w-xl">
                         <label for="global-search" class="sr-only">Cari</label>

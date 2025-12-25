@@ -1,6 +1,6 @@
 ﻿@extends('template-modern')
 
-@section('title', 'Kerjakan Quiz - ' . ($quiz->title ?? 'PASKIBRA WiraPurusa'))
+@section('title', 'Kerjakan Quiz - ' . ($quiz->title ?? 'PASKIBRA Wira Purusa'))
 
 @section('content')
 <div class="space-y-8">

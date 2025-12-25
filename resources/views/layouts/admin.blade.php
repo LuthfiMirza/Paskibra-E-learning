@@ -303,7 +303,7 @@
                 </div>
                 <div>
                     <h1>PASKIBRA Admin</h1>
-                    <p>WiraPurusa Dashboard</p>
+                    <p>Wira Purusa Dashboard</p>
                 </div>
                 <button id="admin-sidebar-close" class="lg:hidden ml-auto rounded-xl border border-slate-200 p-2 text-slate-500 hover:text-slate-700">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
