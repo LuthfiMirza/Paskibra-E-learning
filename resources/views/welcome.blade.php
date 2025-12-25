@@ -341,7 +341,7 @@
 <!-- Slider Gambar -->
 <div class="slider" aria-label="Slider gambar Paskibra E-Learning">
     <div class="slides">
-        <img src="{{ asset('images/paskibra/baki.jpg') }}" alt="Latihan Paskibra di lapangan" />
+        <img src="{{ asset('images/paskibra/baki.JPG') }}" alt="Latihan Paskibra di lapangan" />
         <img src="{{ asset('images/paskibra/pengibaran.JPG') }}" alt="Upacara bendera Paskibra" />
         <img src="{{ asset('images/paskibra/pengukuhan.JPG') }}" alt="Pelatihan baris-berbaris" />
         <img src="{{ asset('images/paskibra/veteran.JPG') }}" alt="Penghargaan dan prestasi Paskibra" />

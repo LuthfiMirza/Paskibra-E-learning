@@ -15,9 +15,10 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         // Create Super Admin
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'admin@paskibra.edu'],
+            [
             'name' => 'Super Admin',
-            'email' => 'admin@paskibra.edu',
             'email_verified_at' => now(),
             'password' => Hash::make('admin123'),
             'role' => 'admin',
@@ -25,12 +26,14 @@ class AdminUserSeeder extends Seeder
             'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+            ]
+        );
 
         // Create Admin User
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'admin@school.edu'],
+            [
             'name' => 'Admin PASKIBRA',
-            'email' => 'admin@school.edu',
             'email_verified_at' => now(),
             'password' => Hash::make('paskibra123'),
             'role' => 'admin',
@@ -38,12 +41,14 @@ class AdminUserSeeder extends Seeder
             'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+            ]
+        );
 
         // Create Instructor/Pembina
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'pembina@school.edu'],
+            [
             'name' => 'Pembina PASKIBRA',
-            'email' => 'pembina@school.edu',
             'email_verified_at' => now(),
             'password' => Hash::make('pembina123'),
             'role' => 'instructor',
@@ -51,12 +56,14 @@ class AdminUserSeeder extends Seeder
             'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+            ]
+        );
 
         // Create Sample Students
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'ahmad.rizki@student.edu'],
+            [
             'name' => 'Ahmad Rizki Pratama',
-            'email' => 'ahmad.rizki@student.edu',
             'email_verified_at' => now(),
             'password' => Hash::make('student123'),
             'role' => 'student',
@@ -64,11 +71,13 @@ class AdminUserSeeder extends Seeder
             'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+            ]
+        );
 
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'siti.nurhaliza@student.edu'],
+            [
             'name' => 'Siti Nurhaliza',
-            'email' => 'siti.nurhaliza@student.edu',
             'email_verified_at' => now(),
             'password' => Hash::make('student123'),
             'role' => 'student',
@@ -76,11 +85,13 @@ class AdminUserSeeder extends Seeder
             'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+            ]
+        );
 
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'budi.santoso@student.edu'],
+            [
             'name' => 'Budi Santoso',
-            'email' => 'budi.santoso@student.edu',
             'email_verified_at' => now(),
             'password' => Hash::make('student123'),
             'role' => 'student',
@@ -88,11 +99,13 @@ class AdminUserSeeder extends Seeder
             'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+            ]
+        );
 
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'dewi.sartika@student.edu'],
+            [
             'name' => 'Dewi Sartika',
-            'email' => 'dewi.sartika@student.edu',
             'email_verified_at' => now(),
             'password' => Hash::make('student123'),
             'role' => 'student',
@@ -100,11 +113,13 @@ class AdminUserSeeder extends Seeder
             'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+            ]
+        );
 
-        User::create([
+        User::firstOrCreate(
+            ['email' => 'andi.wijaya@student.edu'],
+            [
             'name' => 'Andi Wijaya',
-            'email' => 'andi.wijaya@student.edu',
             'email_verified_at' => now(),
             'password' => Hash::make('student123'),
             'role' => 'student',
@@ -112,6 +127,7 @@ class AdminUserSeeder extends Seeder
             'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+            ]
+        );
     }
 }
